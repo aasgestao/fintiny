@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LoginController::class , 'index'])->name('login.index');
 Route::post('/', [LoginController::class , 'index'])->name('login.index');
 Route::post('/login/acessar', [LoginController::class , 'acessar'])->name('login.acessar');
+Route::get('/login/logout', [LoginController::class, 'logout'])->name('login.logout');
 
 //Dashboard
 

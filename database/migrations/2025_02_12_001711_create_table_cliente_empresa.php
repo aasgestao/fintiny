@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('clienteEmpresa', function (Blueprint $table) {
             $table->id();
             $table->string('nome')->nullable();
+            $table->string('cnpj');
             $table->string('token_tiny')->nullable();
             $table->timestamps();
         });

@@ -10,5 +10,5 @@ class ClienteEmpresaModel extends Model
     protected $primaryKey = 'id';
     protected $table = 'clienteEmpresa';
 
-    protected $fillable = ['nome', 'token_tiny'];
+    protected $fillable = ['nome', 'token_tiny', 'cnpj'];
 }

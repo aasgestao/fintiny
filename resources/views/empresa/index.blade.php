@@ -37,6 +37,7 @@
                                 <tr>
                                     <th>Id: </th>
                                     <th>Nome: </th>
+                                    <th>CNPJ:</th>
                                     <th>Token(Tiny)</th>
                                     <th>Ações</th>
                                 </tr>
@@ -46,14 +47,16 @@
                                     <tr>
                                         <td>{{ $empresa->id }}</td>
                                         <td>{{ $empresa->nome }}</td>
+                                        <td>{{ $empresa->cnpj }}</td>
                                         <td>{{ $empresa->token_tiny }}</td>
                                         <td>
                                             <button class="btn btn-sm btn-warning editClientes"
                                             data-id="{{ $empresa->id }}" 
                                             data-nome="{{ $empresa->nome }}"
+                                            data-cnpj="{{ $empresa->cnpj }}"
                                             data-token="{{ $empresa->token_tiny }}"
                                             data-bs-toggle="modal"data-bs-target="#editClientes"><i class="fas fa-edit"></i></button>
-                                            <form action="{{ route('empresa.destroy', ['id'=> $empresa->id] )}}" method="post">
+                                            <form action="{{ route('empresa.destroy', ['id' => $empresa->id])}}" method="post">
                                                 @csrf
                                                 @method('DELETE')
 
@@ -85,6 +88,11 @@
                         <form action="{{ route('empresa.create') }}" method="post">
                             @csrf
                             @method('post')
+
+                            <div class="mb-3">
+                                <label for="cnpj" class="form-label">CNPJ do Cliente: </label>
+                                <input type="text" class="form-control" id="input_cnpj" placeholder="cnpj do Cliente" name="cnpj">
+                            </div>
 
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome do Cliente: </label>
@@ -128,6 +136,11 @@
 
                             <input type="text" id="input_id" value="">
                             <div class="mb-3">
+                                <label for="cnpj" class="form-label">CNPJ do Cliente: </label>
+                                <input type="text" class="form-control" id="input_cnpj" placeholder="cnpj do Cliente" name="cnpj">
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="nome" class="form-label">Nome do Cliente: </label>
                                 <input type="text" class="form-control" id="input_nome" placeholder="Nome do Cliente" name="nome">
                             </div>
@@ -160,15 +173,18 @@
             const id = this.getAttribute('data-id');
             const nome = this.getAttribute('data-nome');
             const token = this.getAttribute('data-token');
+            const cnpj = this.getAttribute('data-cnpj');
 
             const form = document.querySelector('#editClienteForm');
             const inputId = document.querySelector('#input_id');
             const inputNome = document.querySelector('#input_nome');
+            const inpuCnpj = documetno.querySelector('#input_cnpj')
             const inputToken = document.querySelector('#input_token_tiny');
 
             inputId.value = id;
             inputNome.value = nome;
             inputToken.value = token;
+            inpuCnpj.value = cnpj;
 
             // Define o action do formulário dinamicamente
             form.action = `/clientes-update/${id}`;

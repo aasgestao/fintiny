@@ -22,6 +22,7 @@ class ClienteEmpresaController extends Controller
         ClienteEmpresaModel::create([
             'nome'=> strtoupper($request->nome),
             'token_tiny'=>$request->token_tiny,
+            'cnpj'=> $request->cnpj
         ]);
 
         return redirect()->route('empresa.index')->with('success', 'Cliente cadastrado com sucesso');

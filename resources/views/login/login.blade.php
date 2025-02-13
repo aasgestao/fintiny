@@ -34,6 +34,10 @@
                                     <form action="{{ route('login.acessar')}}" method="POST">
                                         @csrf
                                         @method('POST')
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp"
+                                                placeholder="Digite seu cnpj..." name="cnpj">
+                                        </div>
 
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
