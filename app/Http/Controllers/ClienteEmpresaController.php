@@ -7,13 +7,19 @@ use Illuminate\Http\Request;
 
 class ClienteEmpresaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $empresas = ClienteEmpresaModel::all();
+        $busca = $request->nome;
+
+        //var_dump($busca);
+
+        //$empresas = ClienteEmpresaModel::all();
+        $empresas = ClienteEmpresaModel::where('nome', 'like', "%{$busca}%")->get();
 
         return view('/empresa/index', [
             'title' => 'Clientes da empresa | Fin-tiny',
             'empresas' => $empresas,
+            'nome'=> $busca,
         ]);
     }
     public function store(Request $request)

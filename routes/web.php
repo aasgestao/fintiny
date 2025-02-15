@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClienteEmpresaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,3 +22,12 @@ Route::get('/clientes-empresa', [ClienteEmpresaController::class , 'index'])->na
 Route::post('/clientes-create', [ClienteEmpresaController::class , 'store'])->name('empresa.create');
 Route::put('/clientes-update/{id}', [ClienteEmpresaController::class, 'update'])->name('empresa.update');
 Route::delete('/clientes-delete/{id}', [ClienteEmpresaController::class , 'destroy'])->name('empresa.destroy');
+
+
+//Rotas de usuarios
+Route::get('/users', [UserController::class , 'index'])->name('users.index');
+Route::get('/users-create', [UserController::class, 'create'])->name('users.create');
+Route::delete('/users-destroy/{id}', [UserController::class , 'destroy'])->name('users.destroy');
+Route::delete('/users-edit/{id}', [UserController::class , 'edit'])->name('users.edit');
+Route::delete('/users-update/{id}', [UserController::class , 'update'])->name('users.update');
+Route::delete('/users-store', [UserController::class , 'store'])->name('users.store');

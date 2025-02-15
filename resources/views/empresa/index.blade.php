@@ -4,10 +4,10 @@
 
         <div class="content-wrapper">
             <div class="content">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Library</li>
+                <nav aria-label="breadcrumb ">
+                    <ol class="breadcrumb d-flex justify-content-end">
+                        <li class="breadcrumb-item"><a href="{{ route('main.index') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Empresa</li>
                     </ol>
                 </nav>
 
@@ -20,8 +20,8 @@
                     <div class="card-body">
                         <form action="{{ route('empresa.index')}}" method="get">
                             <div class="row">
-                                <div class="col-10">
-                                    <input type="text" class="form-control" id="floatingInput" placeholder="Nome do Cliente" name="nome">
+                                <div class="col-9">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="Nome do Cliente" name="nome" value="{{ old('nome', $nome) }}">
                                     {{-- <label for="floatingInput">Cliente</label> --}}
                                 </div>
                                 <div class="d-flex mx-auto col mb-2">
