@@ -178,7 +178,7 @@
             const form = document.querySelector('#editClienteForm');
             const inputId = document.querySelector('#input_id');
             const inputNome = document.querySelector('#input_nome');
-            const inpuCnpj = documetno.querySelector('#input_cnpj')
+            const inpuCnpj = document.querySelector('#input_cnpj')
             const inputToken = document.querySelector('#input_token_tiny');
 
             inputId.value = id;
