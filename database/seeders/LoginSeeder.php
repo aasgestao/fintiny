@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ClienteEmpresaModel;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,6 +22,7 @@ class LoginSeeder extends Seeder
                 'perfil'=> 'Admin',
                 'password' => Hash::make('123456'),
             ]);
+
         }
 
         if (!User::where('email', 'aasgconsultoria@gmail.com')->first()) {
