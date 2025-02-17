@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClienteEmpresaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImportacoesController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -31,3 +32,7 @@ Route::delete('/users-destroy/{id}', [UserController::class , 'destroy'])->name(
 Route::get('/users-edit/{id}', [UserController::class , 'edit'])->name('users.edit');
 Route::put('/users-update/{id}', [UserController::class , 'update'])->name('users.update');
 Route::post('/users-store', [UserController::class , 'store'])->name('users.store');
+
+//Rotas para importação
+Route::get('/importacoes' , [ImportacoesController::class, 'index'])->name('importacoes.index');
+Route::post('/importacoes/import_contas', [ImportacoesController::class, 'import_contas'])->name('importacoes.contas');

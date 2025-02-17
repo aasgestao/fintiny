@@ -117,7 +117,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{route('empresa.index')}}">Clientes</a>
                         <a class="collapse-item" href="{{ route('users.index')}}">Usuários</a>
-                        <a class="collapse-item" href="#">Importações</a>
+                        <a class="collapse-item" href="{{ route('importacoes.index')}}">Importações</a>
                         {{-- <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Other Pages:</h6>
                         <a class="collapse-item" href="#">404 Page</a>
