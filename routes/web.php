@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClienteEmpresaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FinanceiroController;
 use App\Http\Controllers\ImportacoesController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
@@ -36,3 +37,6 @@ Route::post('/users-store', [UserController::class , 'store'])->name('users.stor
 //Rotas para importação
 Route::get('/importacoes' , [ImportacoesController::class, 'index'])->name('importacoes.index');
 Route::post('/importacoes/import_contas', [ImportacoesController::class, 'import_contas'])->name('importacoes.contas');
+
+
+Route::get('/financeiro' , [FinanceiroController::class, 'index'])->name('financeiro.index');

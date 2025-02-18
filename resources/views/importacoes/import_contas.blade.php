@@ -25,12 +25,15 @@
                         @csrf
                         @method('POST')
 
-                        <div class="col-2">
+                        <div class="col-4">
                             <label for="empresa" class="form-label">Selecione a empresa</label>
                             <select name="empresa" id="" class="form-control">
                                 <option value="">Selecione a empresa ...</option>
-                                <option value="Filtermaq">Filtermaq</option>
-                                <option value="Filterparts ">Filterparts</option>
+                                {{-- <option value="Filtermaq">Filtermaq</option> --}}
+                                {{-- <option value="Filterparts ">Filterparts</option> --}}
+                                @foreach ($clientes as $cliente)
+                                    <option value="{{ $cliente->nome }}">{{ $cliente->nome }}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -39,9 +42,9 @@
                             <input type="file" name="conta" >
 
                             <button class="btn btn-sm btn-primary mt-2" type="submit"
-                             onclick="return innerText('Enviando ...')">Enviar</button>
+                             onclick="this.innerText = 'Enviando...'">Enviar</button>
                         </div>
-                       
+
 
                     </form>
 

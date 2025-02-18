@@ -71,7 +71,7 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Contas:</h6>
-                        <a class="collapse-item" href="#">Contas</a>
+                        <a class="collapse-item" href="{{ route('financeiro.index')}}">Contas</a>
                         <a class="collapse-item" href="#">Pagar</a>
                         <a class="collapse-item" href="#">Receber</a>
                     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArquivosModel;
+use App\Models\ClienteEmpresaModel;
 use App\Models\ContasModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,8 +14,11 @@ class ImportacoesController extends Controller
 {
     public function index()
     {
+        $clientes = ClienteEmpresaModel::all();
+
         return view('importacoes/import_contas', [
             'title'=> 'Importações | FINTINY - 2ACONT ',
+            'clientes'=> $clientes,
         ]);
     }
     
@@ -79,8 +83,8 @@ public function import_contas(Request $request)
         $filePath = $file->storeAs('uploads', $newFileName); // Salva o arquivo em storage/app/uploads/
 
         // Obtém o caminho completo do arquivo
-        //$fullPath = storage_path("app/$filePath");
-        $fullPath = public_path("app/$filePath");
+        $fullPath = storage_path("app/private/$filePath");
+        //$fullPath = public_path("app/private/$filePath");
         //dd(!file_exists($fullPath));
         // Verifica se o arquivo existe
         if (!file_exists($fullPath)) {
@@ -113,8 +117,11 @@ public function import_contas(Request $request)
                     $valorFormatado = str_replace(',', '.', $valorFormatado); // Substitui vírgula por ponto
                     $valorFloat = floatval($valorFormatado);
 
+
+                    // Converte para o formato correto
+                    $dataFormatada = Carbon::createFromFormat('d/m/Y', $data[0])->format('Y-m-d');
                     // Converte a data usando Carbon
-                    $dataFormatada = Carbon::parse($data[0])->format('Y-m-d');
+                    // $dataFormatada = Carbon::parse($data[0])->format('Y-m-d');
 
                     // Monta os dados para inserção/atualização
                     $insertData = [
@@ -132,6 +139,7 @@ public function import_contas(Request $request)
                         'nro_documento' => $data[10],
                     ];
 
+                    //dd($insertData);
                     // Insere ou atualiza os dados
                     if (!$idExistente) {
                         $contasModel->create($insertData);
@@ -144,7 +152,7 @@ public function import_contas(Request $request)
             fclose($handle);  // Fecha o arquivo após processar
 
             // Retorna uma mensagem de sucesso
-            return redirect()->route('importacoes.index')->with('success', 'Arquivo processado com sucesso!');
+            return redirect()->route('financeiro.index')->with('success', 'Contas importadas com sucesso!');
         }
     }
 
