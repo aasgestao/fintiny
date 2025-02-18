@@ -40,3 +40,5 @@ Route::post('/importacoes/import_contas', [ImportacoesController::class, 'import
 
 
 Route::get('/financeiro' , [FinanceiroController::class, 'index'])->name('financeiro.index');
+Route::get('/financeiro/contas_pagar' , [FinanceiroController::class, 'contas_pagar'])->name('financeiro.contas_pagar');
+Route::get('/financeiro/contas_receber' , [FinanceiroController::class, 'contas_receber'])->name('financeiro.contas_receber');

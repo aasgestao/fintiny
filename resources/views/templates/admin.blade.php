@@ -72,8 +72,8 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Contas:</h6>
                         <a class="collapse-item" href="{{ route('financeiro.index')}}">Contas</a>
-                        <a class="collapse-item" href="#">Pagar</a>
-                        <a class="collapse-item" href="#">Receber</a>
+                        <a class="collapse-item" href="{{ route('financeiro.contas_pagar')}}">Pagar</a>
+                        <a class="collapse-item" href="{{ route('financeiro.contas_receber')}}">Receber</a>
                     </div>
                 </div>
             </li>
