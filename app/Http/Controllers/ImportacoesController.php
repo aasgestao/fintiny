@@ -97,7 +97,7 @@ public function import_contas(Request $request)
             $primeira_linha = true;
             $linha = 0;
 
-            while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
+            while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
                 $linha++;
 
                 // Pula a primeira linha (cabeçalho)
@@ -105,7 +105,8 @@ public function import_contas(Request $request)
                     $primeira_linha = false;
                     continue;
                 }
-
+                
+                //dd($data);
                 if ($data) {
                     Log::info("Processando linha: " . $linha);
 

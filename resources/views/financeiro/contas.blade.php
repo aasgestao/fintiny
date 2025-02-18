@@ -4,13 +4,47 @@
 
     <div class="content-wrapper">
         <div class="content">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Library</li>
-                </ol>
-            </nav>
+            <div class="d-flex justify-content-end">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('main.index')}}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Contas</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Pesquisa / Filtros: 
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <form action="{{ route('financeiro.index')}}" method="get">
+                            @csrf
+                            <div class="row">
+                                <div class="form-floating mb-3 col-4">
+                                    <input type="text" class="form-control" name="empresa" placeholder="Digite o nome da empresa:">
+                                    <label for="empresa">Empresa</label>
+                                </div>
 
+                                <div class="form-floating mb-3 col-4">
+                                    <input type="text" class="form-control" name="conta" placeholder="Digite o nome da empresa:">
+                                    <label for="conta">Banco</label>
+                                </div>
+                            </div>
+                            <div class="footer">
+                                <button class="btn btn-sm btn-primary">Enviar</button>
+                                <a class="btn btn-sm btn-warning" href="{{ route('financeiro.index') }}">
+                                    <i class="fas fa-edit text-dark"></i>
+                                    Limpar</a>
+                            </div>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+            </div>
             <div class="card search">
                 <div class="card-header d-flex justify-content-between">
                     <h5>Contas</h5>
@@ -20,10 +54,12 @@
                 </div>
                 <div class="card-body">
                     <x-alert/>
-                    <table class="table table-responsive table-striped border-none">
+                    <table   class="table table-sm table-striped border-none table-responsive-sm table-bordered table-hover display" >
                         <thead>
                             <tr>
                                 <th>ID(tiny)</th>
+                                <th>Banco:</th>
+                                <th>Empresa:</th>
                                 <th>Data</th>
                                 <th>Contato</th>
                                 <th>Categoria</th>
@@ -33,12 +69,15 @@
                         </thead>
                         <tbody>
                             @forelse ($contas as $conta)
-                                <tr>
+                                <tr style="size: 10px">
                                     <td>{{ $conta->id_tiny}}</td>
+                                    <td>{{ $conta->conta}}</td>
+                                    <td>{{  $conta->empresa}}</td>
                                     <td>{{ Carbon\Carbon::parse($conta->data)->format('d/m/Y')}}</td>
                                     <td>{{ $conta->contato}}</td>
                                     <td>{{ $conta->categoria}}</td>
-                                    <td>{{ str_replace('.',',', $conta->valor)}}</td>
+                                    <td>R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
+                                    {{-- <td>{{ str_replace('.',',', $conta->valor)->format(2)}}</td> --}}
                                     <td>
                                         <button class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit text-dark me-2"></i>Editar
@@ -52,9 +91,10 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-end">
+                    
                     {{ $contas->links() }}
-                    </div>
+                    {{-- <div class="d-flex justify-content-end">
+                    </div> --}}
                 </div>
             </div>
         </div>

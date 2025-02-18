@@ -19,6 +19,7 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
+                                        <x-alert/>
                                         <h1 class="h4 text-gray-900 mb-4">Seja Bem-vindo!</h1>
 
                                         @if ($errors->any())

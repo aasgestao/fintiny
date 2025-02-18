@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('empresa')->nullable();
             $table->string('data')->nullable();
             $table->string('categoria')->nullable();
-            $table->string('historico')->nullable();
+            $table->string('historico', 4000)->nullable();
             $table->string('tipo')->nullable();
             $table->string('valor')->nullable();
             $table->string('id_tiny')->nullable();
             $table->string('contato')->nullable();
             $table->string('cnpj')->nullable();
-            $table->string('marcadores')->nullable();
+            $table->string('marcadores', 1000)->nullable();
             $table->string('conta')->nullable();
             $table->string('nro_documento')->nullable();
             $table->timestamps();

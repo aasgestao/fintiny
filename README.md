@@ -24,3 +24,8 @@ Ajustar o .env o banco de dados
 Rodar o comando migrate para executar as migração e criar o banco de dados
 ```
 php artisan migrate
+
+
+Inserir paginação bootstrap
+```
+ php artisan vendor:publish --tag=laravel-pagination

@@ -11,6 +11,7 @@
 
     <title>{{ $title }}</title>
     <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
     <link href="{{ asset('theme/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
@@ -430,6 +431,12 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('theme/js/sb-admin-2.min.js')}}"></script>
+    {{-- script de table --}}
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+
+    <script>
+        let table = new DataTable('#myTable');
+    </script>
 
 </body>
 
