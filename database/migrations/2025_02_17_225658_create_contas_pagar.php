@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('contas_pagar', function (Blueprint $table) {
             $table->id();
             $table->string('empresa');
-            $table->string('id_tiny')->nullable();
             $table->string('nome_cliente')->nullable();
             $table->string('historico', 4000)->nullable();
             $table->string('numero_doc')->nullable();
@@ -24,6 +23,7 @@ return new class extends Migration
             $table->string('valor')->nullable();
             $table->string('saldo')->nullable();
             $table->string('situacao')->nullable();
+            $table->unsignedBigInteger('id_tiny');
             $table->timestamps();
         });
     }

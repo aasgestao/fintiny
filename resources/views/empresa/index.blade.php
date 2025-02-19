@@ -134,7 +134,7 @@
                             @csrf
                             @method('PUT')
 
-                            <input type="text" id="input_id" value="">
+                            <input type="hidden" id="input_id" value="">
                             <div class="mb-3">
                                 <label for="cnpj" class="form-label">CNPJ do Cliente: </label>
                                 <input type="text" class="form-control" id="input_cnpj" placeholder="cnpj do Cliente" name="cnpj">

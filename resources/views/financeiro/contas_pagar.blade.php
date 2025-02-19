@@ -23,14 +23,16 @@
                             <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
                                     <div class="row">
-                                        <form action="#" method="post">
+                                        <form action="{{ route('financeiro.getPedidos')}}" method="post">
+                                            @csrf
+                                            @method('POST')
                                             <div class="row">
                                                 <div class="col-6">
                                                     <label for="cliente" class="form-label"> Cliente: </label>
                                                     <select name="cliente" id="cliente" class="form-control" required>
                                                         <option value="">Selecione ...</option>
                                                         @foreach ($clientes as $cliente)
-                                                        <option value="{{ $cliente->id }}">{{ $cliente->nome_cliente }}</option>
+                                                        <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
                                                             
                                                         @endforeach
                                                     </select>
