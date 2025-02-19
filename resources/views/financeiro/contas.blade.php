@@ -98,7 +98,7 @@
                                     <td>R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
                                     {{-- <td>{{ str_replace('.',',', $conta->valor)->format(2)}}</td> --}}
                                     <td>
-                                        <button class="btn btn-sm btn-warning" 
+                                        <button class="btn btn-sm btn-warning seeDetails" 
                                         data-id="{{ $conta->id_tiny}}"
                                         data-tiny="{{ $conta->id_tiny}}"
                                         data-empresa="{{ $conta->empresa}}"
@@ -107,6 +107,8 @@
                                         data-categoria="{{ $conta->categoria }}"
                                         data-tipo="{{ $conta->tipo }}"
                                         data-valor="{{ number_format($conta->valor, 2, ',', '.') }}"
+                                        data-bs-target="seeDetails"
+                                        data-bs-toggle="modal"
                                         >
                                             <i class="fas fa-edit text-dark me-2"></i>Editar
                                         </button>
@@ -129,5 +131,29 @@
             </div>
         </div>
     </div>
+
+    {{-- MOdal - seeDetails --}}
+    <div class="modal fade" id="seeDetails" tabindex="-1" aria-labelledby="seeDetailsLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="seeDetailsLabel">Detalhes Conta</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{-- Final Modal - seeDetails --}}
+
+    <script>
+        document.querySelectAll('.seeDetails')
+    </script>
 
 @endsection
