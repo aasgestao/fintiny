@@ -24,18 +24,30 @@
                         <form action="{{ route('financeiro.index')}}" method="get">
                             @csrf
                             <div class="row">
-                                <div class="form-floating mb-3 col-4">
+                                <div class="form-floating mb-3 col-3">
                                     <input type="text" class="form-control" name="empresa" placeholder="Digite o nome da empresa:">
                                     <label for="empresa">Empresa</label>
                                 </div>
 
-                                <div class="form-floating mb-3 col-4">
+                                <div class="form-floating mb-3 col-3">
                                     <input type="text" class="form-control" name="conta" placeholder="Digite o nome da empresa:">
                                     <label for="conta">Banco</label>
                                 </div>
+
+                                <div class="form-floating mb-3 col-3">
+                                    <input type="text" class="form-control" name="contato" placeholder="Digite o contato:">
+                                    <label for="contato">Contato</label>
+                                </div>
+
+                                <div class="form-floating mb-3 col-3">
+                                    <input type="text" class="form-control" name="historico" placeholder="Digite o historico:">
+                                    <label for="historico">Historico</label>
+                                </div>
                             </div>
-                            <div class="footer">
-                                <button class="btn btn-sm btn-primary">Enviar</button>
+                            <div class="footer d-flex justify-content-end">
+                                <button class="btn btn-sm btn-primary me-2">
+                                    <i class="fas fa-search text-white"></i>
+                                    Enviar</button>
                                 <a class="btn btn-sm btn-warning" href="{{ route('financeiro.index') }}">
                                     <i class="fas fa-edit text-dark"></i>
                                     Limpar</a>
@@ -60,6 +72,7 @@
                                 <th>ID(tiny)</th>
                                 <th>Banco:</th>
                                 <th>Empresa:</th>
+                                <th>Tipo</th>
                                 <th>Data</th>
                                 <th>Contato</th>
                                 <th>Categoria</th>
@@ -73,13 +86,28 @@
                                     <td>{{ $conta->id_tiny}}</td>
                                     <td>{{ $conta->conta}}</td>
                                     <td>{{  $conta->empresa}}</td>
+                                    @if ($conta->tipo   == "D" )
+                                      <td>  Entrada</td>
+                                    @else
+                                    <td>  Saída</td>
+                                    @endif
+                                         
                                     <td>{{ Carbon\Carbon::parse($conta->data)->format('d/m/Y')}}</td>
                                     <td>{{ $conta->contato}}</td>
                                     <td>{{ $conta->categoria}}</td>
                                     <td>R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
                                     {{-- <td>{{ str_replace('.',',', $conta->valor)->format(2)}}</td> --}}
                                     <td>
-                                        <button class="btn btn-sm btn-warning">
+                                        <button class="btn btn-sm btn-warning" 
+                                        data-id="{{ $conta->id_tiny}}"
+                                        data-tiny="{{ $conta->id_tiny}}"
+                                        data-empresa="{{ $conta->empresa}}"
+                                        data-data="{{ Carbon\Carbon::parse($conta->data)->format('d/m/Y')}}"
+                                        data-contato="{{ $conta->contato }}"
+                                        data-categoria="{{ $conta->categoria }}"
+                                        data-tipo="{{ $conta->tipo }}"
+                                        data-valor="{{ number_format($conta->valor, 2, ',', '.') }}"
+                                        >
                                             <i class="fas fa-edit text-dark me-2"></i>Editar
                                         </button>
                                     </td>
@@ -92,9 +120,11 @@
                         </tbody>
                     </table>
                     
-                    {{ $contas->links() }}
-                    {{-- <div class="d-flex justify-content-end">
-                    </div> --}}
+                    
+                    <div class="d-flex justify-content-between">
+                        {{ $contas->links() }}
+                        Total: {{ $count }}
+                    </div>
                 </div>
             </div>
         </div>

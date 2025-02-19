@@ -87,7 +87,7 @@
                                         <tr>
                                             <td>{{ $conta->id_tiny}}</td>
                                             <td>{{ $conta->empresa}}</td>
-                                            <td>{{ $conta->cliente}}</td>
+                                            <td>{{ $conta->nome_cliente}}</td>
                                             <td>{{ Carbon\Carbon::parse($conta->vencimetno)->format('d/m/Y')}}</td>
                                             <td>{{ $conta->valor}}</td>
                                             <td>{{ $conta->situacao}}</td>

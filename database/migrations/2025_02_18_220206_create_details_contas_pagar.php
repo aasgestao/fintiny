@@ -40,7 +40,7 @@ return new class extends Migration
             $table->string('ocorrencia')->nullable();
             $table->string('dia_vencimento')->nullable();
             $table->string('saldo')->nullable();
-            $table->foreign('id_tiny')->references('id_tiny')->on('contas_pagar');
+            $table->foreignId('id_tiny')->constrained('contas_pagar', 'id_tiny')->onDelete('cascade');
             // $table->foreignId('id_tiny')->constrained();
             $table->timestamps();
         });

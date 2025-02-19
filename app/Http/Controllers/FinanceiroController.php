@@ -14,23 +14,31 @@ class FinanceiroController extends Controller
 {
     public function index(Request $request)
     {
-        //$contas = ContasModel::paginate(20);
-
-        $contas = ContasModel::when($request->has("conta"), function ($query) use ($request) {
-            $query->where("conta", $request->input("conta"));
+        $contas = ContasModel::when($request->filled("conta"), function ($query) use ($request) {
+            $query->where("conta", "like", "%" . $request->input("conta") . "%");
         })
-            ->when($request->has("empresa"), function ($query) use ($request){
-                $query->where("empresa", $request->input("empresa"));
-            })
-            ->orderByDesc('created_at')
-            ->paginate(10)
-            ->withQueryString();
+        ->when($request->filled("empresa"), function ($query) use ($request) {
+            $query->where("empresa", "like", "%" . $request->input("empresa") . "%");
+        })
+        ->when($request->filled("contato"), function ($query) use ($request) {
+            $query->where("contato", "like", "%" . $request->input("contato") . "%");
+        })
+        ->when($request->filled("historico"), function ($query) use ($request) {
+            $query->where("historico", "like", "%" . $request->input("historico") . "%");
+        })
+        ->orderByDesc('created_at')
+        ->paginate(30)
+        ->withQueryString();
+
+        $count = $contas->count();
 
         return view('financeiro/contas', [
             'title'=> 'Listagem de Contas',
-            'contas'=> $contas
+            'contas'=> $contas,
+            'count'=> $count,
         ]);
     }
+
     public function contas_pagar()
     {
         $clientes = ClienteEmpresaModel::all();

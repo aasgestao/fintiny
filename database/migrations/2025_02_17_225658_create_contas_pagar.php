@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('valor')->nullable();
             $table->string('saldo')->nullable();
             $table->string('situacao')->nullable();
-            $table->unsignedBigInteger('id_tiny');
+            $table->unsignedBigInteger('id_tiny')->unique();
             $table->timestamps();
         });
     }
