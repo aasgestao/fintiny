@@ -26,6 +26,18 @@ class FinanceiroController extends Controller
         ->when($request->filled("historico"), function ($query) use ($request) {
             $query->where("historico", "like", "%" . $request->input("historico") . "%");
         })
+        ->when($request->filled("tipo"), function ($query) use ($request) {
+            $query->where("tipo",  $request->input("tipo") );
+        })
+        ->when($request->filled("categoria"), function ($query) use ($request) {
+            $query->where("categoria", "like", "%" . $request->input("categoria") . "%");
+        })
+        ->when($request->filled("data_inicial"), function ($query) use ($request) {
+            $query->where("data", ">=", $request->input("data_inicial"));
+        })
+        ->when($request->filled("data_final"), function ($query) use ($request) {
+            $query->where("data", "<=", $request->input("data_final") );
+        })
         ->orderByDesc('created_at')
         ->paginate(30)
         ->withQueryString();
@@ -36,6 +48,14 @@ class FinanceiroController extends Controller
             'title'=> 'Listagem de Contas',
             'contas'=> $contas,
             'count'=> $count,
+            'empresa'=> $request->input("empresa"),
+            'conta'=> $request->input("conta"),
+            'contato'=> $request->input("contato"),
+            'tipo'=> $request->input("tipo"),
+            'historico'=> $request->input("historico"),
+            'categoria'=> $request->input("categoria"),
+            'data_inicial'=> $request->input("data_inicial"),
+            'data_final'=> $request->input("data_final"),
         ]);
     }
 
@@ -261,5 +281,10 @@ class FinanceiroController extends Controller
         }
 
         return $response;
+    }
+
+    public function contas_update(Request   $request)
+    {
+        dd($request);
     }
 }

@@ -43,3 +43,4 @@ Route::get('/financeiro' , [FinanceiroController::class, 'index'])->name('financ
 Route::get('/financeiro/contas_pagar' , [FinanceiroController::class, 'contas_pagar'])->name('financeiro.contas_pagar');
 Route::get('/financeiro/contas_receber' , [FinanceiroController::class, 'contas_receber'])->name('financeiro.contas_receber');
 Route::post('/financeiro/getPedidos' , [FinanceiroController::class, 'getPedidos'])->name('financeiro.getPedidos');
+Route::put('/financeiro.contas-update', [FinanceiroController::class , 'contas_update'])->name('financeiro.contas-update');
