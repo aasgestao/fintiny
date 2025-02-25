@@ -17,7 +17,7 @@
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                    Pesquisa de Contas / Importação de Contas
+                                    Importação de Contas - Via API Tiny
                                 </button>
                             </h2>
                             <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -33,7 +33,7 @@
                                                         <option value="">Selecione ...</option>
                                                         @foreach ($clientes as $cliente)
                                                         <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
-                                                            
+
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -60,6 +60,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                     <div class="card search">
                         <div class="card-header d-flex justify-content-between">
@@ -67,6 +68,104 @@
                             <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#createClientes"><i
                                     class="fas fa-square-plus"></i></button>
                         </div>
+                        <div class="accordion accordion-flush" id="accordionFlushExample2">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseOne2" aria-expanded="false" aria-controls="flush-collapseOne">
+                                        Filtros / Pesquisa:
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne2" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample2">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <form action="{{ route('financeiro.contas_pagar')}}" method="get" class="form-sm">
+
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <label for="empresa" class="form-label"> Empresa: </label>
+                                                        <select name="empresa" id="empresa" class="form-control" >
+                                                            <option value="{{ $empresa }}">Selecione ...</option>
+                                                            @foreach ($clientes as $cliente)
+                                                                <option value="{{ $cliente->nome }}">{{ $cliente->nome }}</option>
+
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <label for="nome_cliente" class="form-label"> Nome do cliente: </label>
+                                                        <input type="text" name="nome_cliente" class="form-control" value="{{ $nome_cliente }}">
+                                                    </div>
+
+                                                    <div class="col-2">
+                                                        <label for="situacao" class="form-label"> Situação: </label>
+                                                        <select name="situacao" id="situacao" class="form-control">
+                                                            <option value="{{ $situacao }}">Selecione ...</option>
+                                                            @foreach ($situacoes as $situacao)
+                                                                <option value="{{ $situacao->situacao }}">{{ $situacao->situacao }}</option>
+
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-2">
+                                                        <label for="data_inicial" class="form-label"> Data inicio: </label>
+                                                        <input type="date" name="data_inicial" class="form-control" value="{{ $data_inicial }}">
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <label for="data_final" class="form-label"> Data final: </label>
+                                                        <input type="date" name="data_final" class="form-control" value="{{ $data_final }}">
+                                                    </div>
+
+
+
+                                                </div>
+                                                {{-- Linha dois pesquisa --}}
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <label for="historico" class="form-label"> Historico: </label>
+                                                        <input name="historico" id="historico" class="form-control" value="{{ $historico }}">
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <label for="valor" class="form-label"> Valor: </label>
+                                                        <input type="text" name="valor" class="form-control" value="{{ $valor }}">
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <label for="numero_doc" class="form-label"> Número Docto: </label>
+                                                        <input type="text" name="numero_doc" class="form-control" value="{{ $numero_doc }}">
+                                                    </div>
+
+                                                    {{-- <div class="col-2">
+                                                        <label for="situacao" class="form-label"> Situação: </label>
+                                                        <select name="situacao" id="situacao" class="form-control">
+                                                            <option value="">Selecione ...</option>
+                                                            @foreach ($situacoes as $situacao)
+                                                                <option value="{{ $situacao->situacao }}">{{ $situacao->situacao }}</option>
+
+                                                            @endforeach
+                                                        </select>
+                                                    </div> --}}
+
+                                                    <div class="d-flex justify-content-end mt-2">
+                                                        <button class="btn btn-primary btn-sm text-center me-2" ><i
+                                                            class="fas fa-search me-3"></i>
+                                                            Pesquisar</button>
+                                                        <a href="{{ route('financeiro.contas_pagar')}}" class="btn btn-sm btn-warning">
+                                                            <i class="fas fa-edit text-dark me-2"></i> Limpar
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="card-body">
                             <x-alert />
                             <table class="table  table-striped border-none">
@@ -88,7 +187,7 @@
                                             <td>{{ $conta->id_tiny}}</td>
                                             <td>{{ $conta->empresa}}</td>
                                             <td>{{ $conta->nome_cliente}}</td>
-                                            <td>{{ Carbon\Carbon::parse($conta->vencimetno)->format('d/m/Y')}}</td>
+                                            <td>{{ Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y')}}</td>
                                             <td>{{ $conta->valor}}</td>
                                             <td>{{ $conta->situacao}}</td>
                                             <td>{{ $conta->categoria}}</td><td>

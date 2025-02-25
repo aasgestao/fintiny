@@ -59,14 +59,69 @@ class FinanceiroController extends Controller
         ]);
     }
 
-    public function contas_pagar()
+    public function contas_pagar(Request $request)
     {
+
+
         $clientes = ClienteEmpresaModel::all();
-        $contas = ContasPagarModel::paginate(20);
+
+
+        $contas = ContasPagarModel::when($request->filled("empresa"), function ($query) use ($request) {
+            $query->where("empresa", "like", "%" . $request->input("empresa") . "%");
+        })
+            ->when($request->filled("nome_cliente"), function ($query) use ($request) {
+                $query->where("nome_cliente", "like", "%" . $request->input("nome_cliente") . "%");
+            })
+            ->when($request->filled("contato"), function ($query) use ($request) {
+                $query->where("contato", "like", "%" . $request->input("contato") . "%");
+            })
+            ->when($request->filled("historico"), function ($query) use ($request) {
+                $query->where("historico", "like", "%" . $request->input("historico") . "%");
+            })
+            ->when($request->filled("tipo"), function ($query) use ($request) {
+                $query->where("tipo", $request->input("tipo"));
+            })
+            ->when($request->filled("categoria"), function ($query) use ($request) {
+                $query->where("categoria", "like", "%" . $request->input("categoria") . "%");
+            })
+            ->when($request->filled("data_inicial"), function ($query) use ($request) {
+                $query->where("data_vencimento", ">=", $request->input("data_inicial"));
+            })
+            ->when($request->filled("data_final"), function ($query) use ($request) {
+                $query->where("data_vencimento", "<=", $request->input("data_final"));
+            })
+            ->when($request->filled("situacao"), function ($query) use ($request) {
+                $query->where("situacao", $request->input("situacao"));
+            })
+            ->when($request->filled("historico"), function ($query) use ($request) {
+                $query->where("historico", $request->input("historico"));
+            })
+            ->when($request->filled("valor"), function ($query) use ($request) {
+                $query->where("valor", $request->input("valor"));
+            })
+            
+            ->when($request->filled("numero_doc"), function ($query) use ($request) {
+                $query->where("numero_doc", $request->input("numero_doc"));
+            })
+            ->orderByDesc('created_at')
+            ->paginate(30)
+            ->withQueryString();
+
+
+
         return view('financeiro/contas_pagar', [
             'title' => 'Listagem de Contas',
             'contas' => $contas,
-            'clientes'=> $clientes
+            'clientes'=> $clientes,
+            'situacoes' => ContasPagarModel::select('situacao')->distinct()->get(),
+            'empresa'=> $request->input("empresa"),
+            'nome_cliente'=> $request->input("nome_cliente"),
+            'situacao'=> $request->input("situacao"),
+            'data_inicial'=> $request->input("data_inicial"),
+            'data_final'=> $request->input("data_final"),
+            'historico'=> $request->input("historico"),
+            'valor'=> $request->input("valor"),
+            'numero_doc'=> $request->input("numero_doc"),
         ]);
     }
     public function contas_receber()
@@ -81,53 +136,45 @@ class FinanceiroController extends Controller
     }
     public function getPedidos(Request $request)
     {
-        //dd($request);
         $idEmpresa = $request->cliente;
         $empresa = ClienteEmpresaModel::where('id', $idEmpresa)->first();
         $token = $empresa->token_tiny;
         $empresa = $empresa->nome;
-        //dd($empresa, $idEmpresa);
-        $data_inicial = Carbon::parse($request->data_inicio)->format('d/m/Y');
-        $data_final = Carbon::parse($request->data_final)->format('d/m/Y');
+
+        // Verifica se as datas foram passadas e formata corretamente
+        $data_inicial = $request->data_inicio ? Carbon::parse($request->data_inicio)->format('d/m/Y') : null;
+        $data_final = $request->data_final ? Carbon::parse($request->data_final)->format('d/m/Y') : null;
+
         $pagina = 1;
         $maisResultados = true;
-        //dd($data_inicial == '');
-        if($request->has('data_inicial')){
-            $data_inicial = 'estou aqui';
-        }
-        //dd($data_inicial);
-        if ($request->has('data_inicial')) {
-            $data_final = 'data 2';
-        }
-        //dd($data_inicial, $data_final );
-
-
 
         try {
-            while($maisResultados){
-                //Parametros da chamada
-
+            while ($maisResultados) {
+                // Parâmetros da chamada
                 $url = 'https://api.tiny.com.br/api2/contas.pagar.pesquisa.php';
-                $data = "token=$token&formato=JSON&data_ini_vencimento=$data_final&data_fim_vencimento=$data_final&pagina=$pagina";
+                $data = "token=$token&formato=JSON";
 
-                $response = $this->lerContasPagar($url, $data, $optional_headers = null);
+                // Se as datas foram informadas, adiciona ao request
+                if ($data_inicial && $data_final) {
+                    $data .= "&data_ini_vencimento=$data_inicial&data_fim_vencimento=$data_final";
+                }
+
+                $data .= "&pagina=$pagina";
+
+                //dd($data);
+
+                $response = $this->lerContasPagar($url, $data);
                 $dados = json_decode($response, true);
 
-                //dd($dados);
 
-                if (isset($dados['retorno']['status_processamento']) && ($dados['retorno']['status_processamento'] == 3)) {
-                    $contas = $dados['retorno']['contas'];
+                if (isset($dados['retorno']['status_processamento']) && $dados['retorno']['status_processamento'] == 3) {
+                    $contas = $dados['retorno']['contas'] ?? [];
 
-
-                    if (empty($contas)) {
-                        //nao teve contas
-
-                    } else {
-                        //processar as contas
+                    //dd(!empty($contas));
+                    if (!empty($contas)) {
                         foreach ($contas as $conta) {
                             $conta = $conta['conta'];
 
-                            //dd($conta);
                             $novaConta = [
                                 'empresa' => $empresa,
                                 'id_tiny' => $conta['id'],
@@ -141,26 +188,27 @@ class FinanceiroController extends Controller
                                 'situacao' => $conta['situacao'],
                             ];
 
-                            $contaCriada = ContasPagarModel::create($novaConta);
-
-                            //dd($idConta = $contaCriada->id_tiny);
-                            //parametros nova chamada
+                            // Verifica se a conta já existe no banco
+                            $contaExistente = ContasPagarModel::where('id_tiny', $conta['id'])->first();
+                            //dd($contaExistente);
+                            if ($contaExistente) {
+                                $contaExistente->update($novaConta);
+                                $contaCriada = $contaExistente;
+                            } else {
+                                $contaCriada = ContasPagarModel::create($novaConta);
+                            }
+                            //dd('estou aqui antes da 2 chamada');
+                            // Parâmetros da segunda requisição (detalhes da conta)
                             $url2 = 'https://api.tiny.com.br/api2/conta.pagar.obter.php';
                             $idConta = $contaCriada->id_tiny;
                             $data2 = "token=$token&id=$idConta&formato=JSON";
 
-                            //detalhes da nova chamada ( detalhes )
-                            $response2 = $this->lerDetalhesContaPgar($url2, $data2, $optional_headers = null);
-                            //dd($response2);
+                            $response2 = $this->lerDetalhesContaPgar($url2, $data2);
                             $dados2 = json_decode($response2, true);
-
-                            //dd(isset($dados2['retorno']['status_processamento']) && ($dados2['retorno']['status_processamento']== 3));
-
-                            if (isset($dados2['retorno']['status_processamento']) && ($dados2['retorno']['status_processamento'] == 3)) {
+                            
+                            if (isset($dados2['retorno']['status_processamento']) && $dados2['retorno']['status_processamento'] == 3) {
                                 $detalhesConta = $dados2['retorno']['conta'];
-
-                                //dd($detalhesConta);
-
+                                
                                 $inputDetalhes = [
                                     "id_tiny" => $contaCriada->id_tiny,
                                     "data" => Carbon::createFromFormat('d/m/Y', $detalhesConta['data'])->format('Y-m-d'),
@@ -168,7 +216,7 @@ class FinanceiroController extends Controller
                                     "valor" => $detalhesConta['valor'],
                                     "nro_documento" => $detalhesConta['nro_documento'] ?? '',
                                     "competencia" => $detalhesConta['competencia'] ?? '',
-                                    "codigo" => $detalhesConta['codigo'] ?? '', //
+                                    "codigo" => $detalhesConta['codigo'] ?? '',
                                     "nome" => $detalhesConta['nome'] ?? '',
                                     "tipo_pessoa" => $detalhesConta['tipo_pessoa'] ?? '',
                                     "cpf_cnpj" => $detalhesConta['cpf_cnpj'] ?? '',
@@ -192,44 +240,33 @@ class FinanceiroController extends Controller
                                     "saldo" => $detalhesConta['saldo'] ?? '',
                                 ];
 
-                                if (!DetailsContasPagarModel::where('id_tiny', $contaCriada->id_tiny)->first()) {
-                                    //dd('estou aqui 1');
-                                    $detalhesOK = DetailsContasPagarModel::create($inputDetalhes);
-                                    //dd($detalhesOK);
-                                }
-                                //dd('estou aqui 2');
+                                //dd($inputDetalhes);
+                                // Atualiza ou cria o registro na tabela de detalhes
+                                $atualizado = DetailsContasPagarModel::updateOrCreate(
+                                    ['id_tiny' => $contaCriada->id_tiny],
+                                    $inputDetalhes
+                                );
 
-                                $idExiste = DetailsContasPagarModel::where('id_tiny', $contaCriada->id_tiny)->first();
-
-                                $contaAtualizar = DetailsContasPagarModel::findOrFail($idExiste->id);
-                                $contaAtualizar->update($inputDetalhes);
-
-                                //dd('atualizado');
+                                //dd($atualizado);
                             }
                         }
-
-
                     }
-                }else{
+                } else {
                     $maisResultados = false;
+
+                    return redirect()->route('financeiro.contas_pagar')->with('success', 'Contas importadas com sucesso!');
+
                 }
-                // Incrementa a página para a próxima iteração
+
                 $pagina++;
             }
 
-            return redirect()->route('financeiro.contas_pagar')->with('success', 'Contas importadas com sucesso!!!');
-
-
+            
         } catch (\Throwable $th) {
-            //throw $th;
-            return redirect()->route('financeiro.contas_pagar')->with('error', "Contas não importadas!!!");
-
-
+            return redirect()->route('financeiro.contas_pagar')->with('error', "Erro ao importar contas.");
         }
-
-        
-
     }
+
 
     private function lerContasPagar($url, $data, $optional_headers = null)
     {
