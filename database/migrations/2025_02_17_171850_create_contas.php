@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('historico', 4000)->nullable();
             $table->string('tipo')->nullable();
             $table->string('valor')->nullable();
-            $table->string('id_tiny')->nullable();
+            $table->unsignedBigInteger('id_tiny')->unique();
             $table->string('contato')->nullable();
             $table->string('cnpj')->nullable();
             $table->string('marcadores', 1000)->nullable();

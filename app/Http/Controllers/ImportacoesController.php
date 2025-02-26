@@ -63,10 +63,12 @@ class ImportacoesController extends Controller
 //     }
 
 //     return back()->with('error', 'Erro ao enviar o arquivo.');
-// }
+//}
 
 public function import_contas(Request $request)
 {
+    $financeiro = new FinanceiroController();
+
     $request->validate([
         'conta' => 'required|file|mimetypes:text/csv,text/plain',
         'empresa' => 'required'
@@ -147,9 +149,30 @@ public function import_contas(Request $request)
                     } else {
                         $idExistente->update($insertData);
                     }
+
+                        if ($data[3] == 'C') {
+                            $conta_debito = $data[9];
+                            $conta_credito = '';
+                        } else {
+                            $conta_debito = '';
+                            $conta_credito = $data[9];
+                        }
+                        
+
+                        $dados = [
+                            'data' => $dataFormatada,
+                            'valor' => $valorFloat,
+                            'conta_debito' => $conta_debito,
+                            'conta_credito' => $conta_credito,
+                            'historico' => $data[2],
+                            'id_tiny' => $data[5],
+                        ];
+
+                    $financeiro->lancamentosContabeis($dados);
+                    
+                    
                 }
             }
-
             fclose($handle);  // Fecha o arquivo após processar
 
             // Retorna uma mensagem de sucesso
@@ -160,3 +183,4 @@ public function import_contas(Request $request)
     return back()->with('error', 'Erro ao processar o arquivo.');
 }
 }
+

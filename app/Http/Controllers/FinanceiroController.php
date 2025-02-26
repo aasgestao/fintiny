@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ContasExport;
 use App\Models\ClienteEmpresaModel;
 use App\Models\ContasModel;
 use App\Models\ContasPagarModel;
 use App\Models\ContasReceberModel;
 use App\Models\DetailsContasPagarModel;
+use App\Models\LancamentosContabeisModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FinanceiroController extends Controller
 {
@@ -56,6 +60,14 @@ class FinanceiroController extends Controller
             'categoria'=> $request->input("categoria"),
             'data_inicial'=> $request->input("data_inicial"),
             'data_final'=> $request->input("data_final"),
+        ]);
+    }
+    public function lancamentosIndex()
+    {
+
+        return view('financeiro.lancamentos', [
+            'title'=> 'Lançamentos Contabeis 2.0',
+            'lancamentos'=> LancamentosContabeisModel::paginate(50),
         ]);
     }
 
@@ -123,6 +135,11 @@ class FinanceiroController extends Controller
             'valor'=> $request->input("valor"),
             'numero_doc'=> $request->input("numero_doc"),
         ]);
+    }
+    public function export(Request $request)
+    {
+        $data = date('dmY_Hsi');
+        return Excel::download(new ContasExport($request), "contas_filtradas_$data.xlsx");
     }
     public function contas_receber()
     {
@@ -323,5 +340,56 @@ class FinanceiroController extends Controller
     public function contas_update(Request   $request)
     {
         dd($request);
+    }
+
+    public function lancamentosContabeis($dados)
+    {
+        //dd($dados['data']);
+
+
+        
+        // $dados = [
+        //     'data' => $dados->data,
+        //     'valor' => $dados->valor,
+        //     'conta_debito' => $dados->conta_debito,
+        //     'conta_credito' => $dados->conta_credito,
+        //     'historico' => $dados->historico,
+        //     'id_tiny' => $dados->id_tiny,
+        // ];
+
+        $existeLancamento = LancamentosContabeisModel::where('id_tiny', $dados['id_tiny'])->first();
+
+        if(!$existeLancamento){
+            $novaconta = LancamentosContabeisModel::create([
+            'data' => $dados['data'],
+            'valor' => $dados['valor'],
+            'conta_debito' => $dados['conta_debito'],
+            'conta_credito' => $dados['conta_credito'],
+            'historico' => $dados['historico'],
+            'id_tiny' => $dados['id_tiny'],
+            ]);
+
+            $id = $novaconta->id;
+
+            Log::info("Conta criada com sucesso numero $id .");
+
+        }else{
+
+            $contaatualizada = LancamentosContabeisModel::where('id_tiny', $dados['id_tiny'])->update([
+                'data' => $dados['data'],
+                'valor' => $dados['valor'],
+                'conta_debito' => $dados['conta_debito'],
+                'conta_credito' => $dados['conta_credito'],
+                'historico' => $dados['historico'],
+                'id_tiny' => $dados['id_tiny'],
+            ]);
+            
+                
+
+            Log::info("Conta atualizado com sucesso.");
+        }
+
+        
+        
     }
 }

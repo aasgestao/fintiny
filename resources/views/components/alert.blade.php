@@ -17,7 +17,7 @@
 @endif
 
 @if ($errors->any())
-    <div class="alert alert-danger d-flex justify-content-between" role="alert">
+    <div class="alert alert-warning d-flex justify-content-between" role="alert">
         @foreach ($errors->all() as $error)
             {{ $error }}<br>
         @endforeach

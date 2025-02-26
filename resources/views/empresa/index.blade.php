@@ -56,12 +56,16 @@
                                             data-cnpj="{{ $empresa->cnpj }}"
                                             data-token="{{ $empresa->token_tiny }}"
                                             data-bs-toggle="modal"data-bs-target="#editClientes"><i class="fas fa-edit"></i></button>
-                                            <form action="{{ route('empresa.destroy', ['id' => $empresa->id])}}" method="post">
+
+                                            <a href="{{ route('empresa.show', ['id'=> $empresa->id ])}}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            {{-- <form action="{{ route('empresa.destroy', ['id' => $empresa->id])}}" method="post">
                                                 @csrf
                                                 @method('DELETE')
 
                                                 <button type="submit" onclick="return confirm('Quer realmente apagar esse registro? ')" class="btn btn-sm btn-danger"><i class="fas fa-trash "></i></button>
-                                            </form>
+                                            </form> --}}
                                         </td>
                                     </tr>
                                 @empty

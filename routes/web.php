@@ -21,6 +21,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('main.inde
 
 //configuraçoes empresa
 Route::get('/clientes-empresa', [ClienteEmpresaController::class , 'index'])->name('empresa.index');
+Route::get('/ver-empresa/{id}', [ClienteEmpresaController::class , 'show'])->name('empresa.show');
 Route::post('/clientes-create', [ClienteEmpresaController::class , 'store'])->name('empresa.create');
 Route::put('/clientes-update/{id}', [ClienteEmpresaController::class, 'update'])->name('empresa.update');
 Route::delete('/clientes-delete/{id}', [ClienteEmpresaController::class , 'destroy'])->name('empresa.destroy');
@@ -38,9 +39,13 @@ Route::post('/users-store', [UserController::class , 'store'])->name('users.stor
 Route::get('/importacoes' , [ImportacoesController::class, 'index'])->name('importacoes.index');
 Route::post('/importacoes/import_contas', [ImportacoesController::class, 'import_contas'])->name('importacoes.contas');
 
+//Rotas para exportação
+Route::get('financeiro/export/', [FinanceiroController::class, 'export'])->name('exportExcel');
+
 
 Route::get('/financeiro' , [FinanceiroController::class, 'index'])->name('financeiro.index');
 Route::get('/financeiro/contas_pagar' , [FinanceiroController::class, 'contas_pagar'])->name('financeiro.contas_pagar');
 Route::get('/financeiro/contas_receber' , [FinanceiroController::class, 'contas_receber'])->name('financeiro.contas_receber');
 Route::post('/financeiro/getPedidos' , [FinanceiroController::class, 'getPedidos'])->name('financeiro.getPedidos');
 Route::put('/financeiro.contas-update', [FinanceiroController::class , 'contas_update'])->name('financeiro.contas-update');
+Route::get('financeiro/lancamentos_contabeis' , [FinanceiroController::class , 'lancamentosIndex'])->name('financeiro.lancamentos');

@@ -191,7 +191,18 @@
                                             <td>{{ $conta->valor}}</td>
                                             <td>{{ $conta->situacao}}</td>
                                             <td>{{ $conta->categoria}}</td><td>
-                                                <button class="btn btn-sm btn-warning">
+                                                <button class="btn btn-sm btn-warning verConta"
+                                                data-id="{{ $conta->id}}"
+                                                data-id_tiny="{{ $conta->id_tiny}}"
+                                                data-nome_cliente="{{ $conta->nome_cliente}}"
+                                                data-vencimento="{{ $conta->vencimento}}"
+                                                data-valor="{{ $conta->valor}}"
+                                                data-empresa="{{ $conta->empresa}}"
+                                                data-situacao="{{ $conta->situacao}}"
+                                                data-categoria="{{ $conta->categoria}}"
+                                                data-bs-toggle="offcanvas"
+                                                data-bs-target="#verConta"
+                                                >
                                                     <i class="fas fa-edit text-dark me-2"></i>Editar
                                                 </button>
                                             </td>
@@ -212,28 +223,26 @@
                 </div>
             </div>
     <!--offcanvas ver -->
-    {{-- <div class="offcanvas offcanvas-end" tabindex="-1" id="verDetalheConta" aria-labelledby="verDetalheContaLabel"
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="verConta" aria-labelledby="verContaLabel"
         style="width: 800px">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="verDetalheContaLabel">Detalhes Conta</h5>
+            <h5 class="offcanvas-title" id="verContaLabel">Detalhes Conta</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="<?= base_url('financeiro/baixaConta') ?>" method="post">
+            <form action="#" method="post">
                 <div class="row">
                     <div class="col-6">
-                        <input type="hidden" id="inputEmpresa" value="" name="empresa">
+                        <input type="hidden" id="input_empresa" value="" name="empresa">
                         <label for="id_tiny" class="form-label">ID (Tiny): </label>
-                        <input type="text" id="id_tiny" value="" class="form-control" name="id_tiny" readonly>
+                        <input type="text" id="input_id_tiny" value="" class="form-control" name="id_tiny" readonly>
                     </div>
                     <div class="col-6">
                         <label for="contaOrigem" class="form-label">Banco: </label>
                         <select name="contaOrigem" id="contaOrigem" class="form-control">
-                            <?php if ($bancos): ?>
-                            <?php    foreach ($bancos as $banco): ?>
-                            <option value="<?= $banco['nome'] ?>"><?= $banco['nome'] ?></option>
-                            <?php    endforeach; ?>
-                            <?php endif; ?>
+                            @if ($bancos)
+                                <option value="{{ $banco->nome }}">{{ $banco->nome }}</option>
+                            @endif
                         </select>
                     </div>
 
@@ -246,11 +255,8 @@
                     <div class="col-6">
                         <label for="categoria" class="form-label">Categoria: </label>
                         <select name="categoria" id="categoria" class="form-control">
-                            <?php if ($detalhes): ?>
-                            <?php    foreach ($detalhes as $detalhe): ?>
-                            <option value="<?= $detalhe['categoria'] ?>"><?= $detalhe['categoria'] ?></option>
-                            <?php    endforeach; ?>
-                            <?php endif; ?>
+                            @if ($detalhes)
+                            <option value="{{ $detalhe->categoria }}">{{ $detalhe->categoria }}</option>
                         </select>
                     </div>
 
@@ -292,8 +298,8 @@
     </div>
 
 
-        <!-- Modal criar conta -->
-        <div class="modal fade" id="criarConta" tabindex="-1" aria-labelledby="criarContaLabel" aria-hidden="true">
+                <!-- Modal criar conta -->
+       {{-- <div class="modal fade" id="criarConta" tabindex="-1" aria-labelledby="criarContaLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -301,14 +307,14 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="<?=base_url('financeiro/criarConta')?>" method="post">
+                        <form action="{{route('financeiro/criarConta')?>" method="post">
                             <div class="col-12">
                                 <label for="data" class="form-label">Empresa:</label>
                                 <select name="empresa_id" id="" class="form-control" required>
                                     <option value="">Selecione ...</option>
                                     <?php if (isset($clientes)): ?>
                                     <?php    foreach ($clientes as $clienteEmpresa): ?>
-                                    <option value="<?= $clienteEmpresa['id'] ?>"><?= $clienteEmpresa['nome'] ?></option>
+                                    <option value="{{ $clienteEmpresa['id'] ?>">{{ $clienteEmpresa['nome'] ?></option>
                                     <?php    endforeach; ?>
                                     <?php endif; ?>
                                 </select>
@@ -332,7 +338,7 @@
                                         <option value="">Selecione ...</option>
                                         <?php if (isset($clientesInternos)): ?>
                                         <?php    foreach ($clientesInternos as $clienteInterno): ?>
-                                        <option value="<?= $clienteInterno['nome'] ?>"><?= $clienteInterno['nome'] ?></option>
+                                        <option value="{{ $clienteInterno['nome'] ?>">{{ $clienteInterno['nome'] ?></option>
                                         <?php    endforeach; ?>
                                         <?php endif; ?>
                                     </select>
@@ -350,7 +356,7 @@
                                         <option value="">Selecione ...</option>
                                         <?php if (!empty($categorias)): ?>
                                         <?php    foreach ($categorias as $categoria): ?>
-                                        <option value="<?= esc($categoria) ?>"><?= esc($categoria) ?></option>
+                                        <option value="{{ esc($categoria) ?>">{{ esc($categoria) ?></option>
                                         <?php    endforeach; ?>
                                         <?php endif; ?>
                                     </select>

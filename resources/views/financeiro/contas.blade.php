@@ -87,11 +87,31 @@
                 </div>
             </div>
             <div class="card search">
-                <div class="card-header d-flex justify-content-between">
-                    <h5>Contas</h5>
-                    <a class="btn btn-sm btn-info" href="{{ route('importacoes.index')}}" >
-                        <i class="fa-solid fa-file-import"></i>
-                    </a>
+                <div class="card-header">
+                    <div class=" d-flex justify-content-start"><h5>Contas</h5></div>
+                    <div class=" d-flex justify-content-end">
+
+                        <a class="btn btn-sm btn-info me-2" href="{{ route('importacoes.index')}}" >
+                            <i class="fa-solid fa-file-import"></i>
+                        </a>
+                        <form action="{{ route('exportExcel') }}" method="GET">
+                            <input type="hidden" name="conta" value="{{ request('conta') }}">
+                            <input type="hidden" name="empresa" value="{{ request('empresa') }}">
+                            <input type="hidden" name="contato" value="{{ request('contato') }}">
+                            <input type="hidden" name="historico" value="{{ request('historico') }}">
+                            <input type="hidden" name="tipo" value="{{ request('tipo') }}">
+                            <input type="hidden" name="categoria" value="{{ request('categoria') }}">
+                            <input type="hidden" name="data_inicial" value="{{ request('data_inicial') }}">
+                            <input type="hidden" name="data_final" value="{{ request('data_final') }}">
+
+                            <button type="submit" class="btn btn-success btn-sm me-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                            </button>
+                        </form>
+                        {{-- <a class="btn btn-sm btn-success" href="{{ route('exportExcel')}}" >
+                            <i class="fa-solid fa-file-excel"></i>
+                        </a> --}}
+                    </div>
                 </div>
                 <div class="card-body">
                     <x-alert/>

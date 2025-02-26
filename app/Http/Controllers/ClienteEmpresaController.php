@@ -22,6 +22,16 @@ class ClienteEmpresaController extends Controller
             'nome'=> $busca,
         ]);
     }
+    public function show($id)
+    {
+        $empresa = ClienteEmpresaModel::where('id', $id)->first();
+        
+        //dd($empresa);
+        return view('empresa.show' , [
+            'title'=> 'Visualizado Cliente',
+            'empresa'=> $empresa,
+        ]);
+    }
     public function store(Request $request)
     {
 
