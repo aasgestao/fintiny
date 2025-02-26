@@ -160,6 +160,7 @@ public function import_contas(Request $request)
                         
 
                         $dados = [
+                            'empresa' => $empresa,
                             'data' => $dataFormatada,
                             'valor' => $valorFloat,
                             'conta_debito' => $conta_debito,

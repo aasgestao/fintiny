@@ -48,7 +48,11 @@
                                         <td>{{ $empresa->id }}</td>
                                         <td>{{ $empresa->nome }}</td>
                                         <td>{{ $empresa->cnpj }}</td>
-                                        <td>{{ $empresa->token_tiny }}</td>
+                                        <td>
+                                            <span id="token" style="display: none;">{{ $empresa->token_tiny }}</span>
+                                            <button onclick="toggleToken()"  class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-eye me-2"></i>Mostrar</button>
+                                        </td>
                                         <td>
                                             <button class="btn btn-sm btn-warning editClientes"
                                             data-id="{{ $empresa->id }}" 
@@ -195,6 +199,17 @@
 
         })
     });
+    </script>
+
+<script>
+    function toggleToken() {
+        let token = document.getElementById('token');
+        if (token.style.display === 'none') {
+            token.style.display = 'inline';
+        } else {
+            token.style.display = 'none';
+        }
+    }
     </script>
 
 @endsection

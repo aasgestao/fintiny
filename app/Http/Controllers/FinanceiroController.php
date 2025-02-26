@@ -9,6 +9,7 @@ use App\Models\ContasPagarModel;
 use App\Models\ContasReceberModel;
 use App\Models\DetailsContasPagarModel;
 use App\Models\LancamentosContabeisModel;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -361,6 +362,7 @@ class FinanceiroController extends Controller
 
         if(!$existeLancamento){
             $novaconta = LancamentosContabeisModel::create([
+            'empresa' => $dados['empresa'],
             'data' => $dados['data'],
             'valor' => $dados['valor'],
             'conta_debito' => $dados['conta_debito'],
@@ -376,6 +378,7 @@ class FinanceiroController extends Controller
         }else{
 
             $contaatualizada = LancamentosContabeisModel::where('id_tiny', $dados['id_tiny'])->update([
+                'empresa' => $dados['empresa'],
                 'data' => $dados['data'],
                 'valor' => $dados['valor'],
                 'conta_debito' => $dados['conta_debito'],

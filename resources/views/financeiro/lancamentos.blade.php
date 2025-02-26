@@ -22,9 +22,10 @@
                 </div>
 
                 <div class="card-body">
-                    <table class="table table-resposive table-striped">
+                    <table class="table table-sm table-resposive table-striped">
                         <thead>
                             <tr class="text-center text-white dark">
+                                <th>Empresa</th>
                                 <th>Data</th>
                                 <th>Valor</th>
                                 <th>Débito</th>
@@ -36,6 +37,7 @@
                         <tbody>
                             @forelse ($lancamentos as $lancamento)
                                 <tr>
+                                    <td>{{ $lancamento->empresa }}</td>
                                     <td>{{ Carbon\Carbon::parse($lancamento->data)->format('d/m/Y')}}</td>
                                     <td>{{ number_format($lancamento->valor, 2,',','.')}}</td>
                                     <td>{{ $lancamento->conta_debito}}</td>
@@ -45,7 +47,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center"> Não há lancamentos !</td>
+                                    <td colspan="7" class="text-center"> Não há lancamentos !</td>
                                 </tr>
                             @endforelse
                         </tbody>

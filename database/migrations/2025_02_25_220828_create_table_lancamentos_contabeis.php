@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('lancamentos_contabeis', function (Blueprint $table) {
             $table->id();
+            $table->string('empresa')->nullable();
             $table->date('data')->nullable();
             $table->decimal('valor', 20,2)->nullable();
             $table->string('conta_debito')->nullable();
