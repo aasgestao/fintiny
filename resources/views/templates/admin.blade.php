@@ -78,6 +78,7 @@
                         <a class="collapse-item" href="{{ route('financeiro.contas_pagar')}}">Pagar</a>
                         <a class="collapse-item" href="{{ route('financeiro.contas_receber')}}">Receber</a>
                         <a class="collapse-item" href="{{ route('financeiro.lancamentos')}}">Lancamentos Contábeis</a>
+                        <a class="collapse-item" href="{{ route('plano_contas')}}">Plano de Contas</a>
                     </div>
                 </div>
             </li>

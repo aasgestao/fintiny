@@ -5,6 +5,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FinanceiroController;
 use App\Http\Controllers\ImportacoesController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PlanoContasController;
+use App\Http\Controllers\PlaoContasController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,7 @@ Route::post('/users-store', [UserController::class , 'store'])->name('users.stor
 //Rotas para importação
 Route::get('/importacoes' , [ImportacoesController::class, 'index'])->name('importacoes.index');
 Route::post('/importacoes/import_contas', [ImportacoesController::class, 'import_contas'])->name('importacoes.contas');
+Route::post('/importacoes/import_planocontas', [ImportacoesController::class, 'import_planocontas'])->name('importacoes.planocontas');
 
 //Rotas para exportação
 Route::get('financeiro/export/', [FinanceiroController::class, 'export'])->name('exportExcel');
@@ -49,3 +52,7 @@ Route::get('/financeiro/contas_receber' , [FinanceiroController::class, 'contas_
 Route::post('/financeiro/getPedidos' , [FinanceiroController::class, 'getPedidos'])->name('financeiro.getPedidos');
 Route::put('/financeiro.contas-update', [FinanceiroController::class , 'contas_update'])->name('financeiro.contas-update');
 Route::get('financeiro/lancamentos_contabeis' , [FinanceiroController::class , 'lancamentosIndex'])->name('financeiro.lancamentos');
+
+//Plano de contas
+Route::get('/plano_contas', [PlanoContasController::class , 'index'])->name('plano_contas');
+Route::post('/plano_editar', [PlanoContasController::class , 'plano_editar'])->name('plano_editar');

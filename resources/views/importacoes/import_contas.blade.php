@@ -50,6 +50,46 @@
 
                 </div>
             </div>
+            {{-- importaçao de plano de contas --}}
+            <div class="card planoContas">
+                <div class="card-header d-flex justify-content-between">
+                    <h5>planoContas</h5>
+                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#createClientes"><i
+                            class="fas fa-square-plus"></i></button>
+                </div>
+                <div class="card-body">
+                    <x-alert/>
+
+                    <p>Importação de arquivo .csv - (planoContas)</p>
+                    <form action="{{ route('importacoes.planocontas')}}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        @method('POST')
+
+                        <div class="col-4">
+                            <label for="empresa" class="form-label">Selecione a empresa</label>
+                            <select name="empresa" id="" class="form-control">
+                                <option value="">Selecione a empresa ...</option>
+                                {{-- <option value="Filtermaq">Filtermaq</option> --}}
+                                {{-- <option value="Filterparts ">Filterparts</option> --}}
+                                @foreach ($clientes as $cliente)
+                                    <option value="{{ $cliente->nome }}">{{ $cliente->nome }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-2">
+                            <label for="planoconta" class="form-label">Importe o arquivo:</label>
+                            <input type="file" name="planoconta" >
+
+                            <button class="btn btn-sm btn-primary mt-2" type="submit"
+                             onclick="this.innerText = 'Enviando...'">Enviar</button>
+                        </div>
+
+
+                    </form>
+
+                </div>
+            </div>
         </div>
     </div>
 

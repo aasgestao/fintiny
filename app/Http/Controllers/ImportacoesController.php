@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ArquivosModel;
 use App\Models\ClienteEmpresaModel;
 use App\Models\ContasModel;
+use App\Models\PlanoContasModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -77,6 +78,8 @@ public function import_contas(Request $request)
     $data = date('Ymd_Hsi');
     $nome = 'Arquivo_importado_';
     
+    
+
     $empresa = $request->input('empresa');
     $file = $request->file('conta'); // Pega o arquivo do input
     
@@ -150,11 +153,21 @@ public function import_contas(Request $request)
                         $idExistente->update($insertData);
                     }
 
+                    if(!$data[7]){
+                        $conta_parceiro = '';
+                    }else{
+                        $parceiro = PlanoContasModel::where('cnpj', $data[7])->first();
+                    $conta_parceiro = $parceiro->conta_resumida ?? "";
+                    }
+                
+                     //dd($conta_parceiro);
+                    
+
                         if ($data[3] == 'C') {
                             $conta_debito = $data[9];
-                            $conta_credito = '';
+                            $conta_credito = $conta_parceiro ?? "";
                         } else {
-                            $conta_debito = '';
+                            $conta_debito = $conta_parceiro ?? "";
                             $conta_credito = $data[9];
                         }
                         
@@ -168,6 +181,7 @@ public function import_contas(Request $request)
                             'historico' => $data[2],
                             'id_tiny' => $data[5],
                         ];
+                        //dd($dados);
 
                     $financeiro->lancamentosContabeis($dados);
                     
@@ -183,5 +197,93 @@ public function import_contas(Request $request)
 
     return back()->with('error', 'Erro ao processar o arquivo.');
 }
+    public function import_planocontas(Request $request)
+    {
+        
+        $request->validate([
+            'planoconta' => 'required|file|mimetypes:text/csv,text/plain',
+            'empresa' => 'required'
+        ]);
+        
+        
+        $empresa = ClienteEmpresaModel::where('nome', $request->input('empresa'))->first();
+        $empresa = $empresa->cnpj;
+
+        $date = date('Ymd_Hsi');
+        $nome = 'Plano_importado_';
+        //dd($empresa);
+        //$empresa = $request->input('empresa');
+        $file = $request->file('planoconta'); // Pega o arquivo do input
+
+        if ($file->isValid()) {
+            $newFileName = "$nome$date-$empresa.csv"; // Gera um nome único para o arquivo
+            $filePath = $file->storeAs('uploads', $newFileName); // Salva o arquivo em storage/app/uploads/
+
+            // Obtém o caminho completo do arquivo
+            $fullPath = storage_path("app/private/$filePath");
+            //$fullPath = public_path("app/private/$filePath");
+            //dd(!file_exists($fullPath));
+            // Verifica se o arquivo existe
+            if (!file_exists($fullPath)) {
+                return back()->with('error', 'O arquivo não foi encontrado no diretório.');
+            }
+
+            // Abre o arquivo para leitura
+            if (($handle = fopen($fullPath, 'r')) !== FALSE) {
+                $planoContasModel = new PlanoContasModel();
+                $primeira_linha = true;
+                $linha = 0;
+
+                while (($data = fgetcsv($handle, 10000, ";")) !== FALSE) {
+                    //dd($data);
+                    $linha++;
+
+                    // Pula a primeira linha (cabeçalho)
+                    if ($primeira_linha) {
+                        $primeira_linha = false;
+                        continue;
+                    }
+
+                    //dd($data);
+                    if ($data) {
+                        //dd($data);
+                        Log::info("Processando linha: " . $linha);
+
+                        // Verifica se o id_tiny já existe no banco
+                        $idExistente = $planoContasModel->where('conta_resumida', $data[2])->first();
+
+                        // Monta os dados para inserção/atualização
+                        $insertData = [
+                            'cliente_id'=> $empresa,
+                            'cnpj'=> $data[4],
+                            'conta' => $data[0],
+                            'analitica' => $data[1],
+                            'conta_resumida' => $data[2],
+                            'descricao' => $data[3],
+                        ];
+
+                        //dd($insertData);
+                        // Insere ou atualiza os dados
+                        //$planoContasModel->create($insertData);
+
+                        if (!$idExistente) {
+                            $planoContasModel->create($insertData);
+                        } else {
+                            $idExistente->update($insertData);
+                        }
+
+                        
+                        
+                    }
+                }
+                fclose($handle);  // Fecha o arquivo após processar
+
+                // Retorna uma mensagem de sucesso
+                return redirect()->route('financeiro.index')->with('success', 'Contas importadas com sucesso!');
+            }
+        }
+
+        return back()->with('error', 'Erro ao processar o arquivo.');
+    }
 }
 

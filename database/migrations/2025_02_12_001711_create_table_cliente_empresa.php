@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('clienteempresa', function (Blueprint $table) {
             $table->id();
             $table->string('nome')->nullable();
-            $table->string('cnpj');
+            $table->unsignedBigInteger('cnpj')->unique();
             $table->string('token_tiny')->nullable();
             $table->timestamps();
         });
