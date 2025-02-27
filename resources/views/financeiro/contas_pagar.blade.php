@@ -1,6 +1,11 @@
 @extends('templates.admin')
 
+@php
+ use App\Models\DetailsContasPagarModel;
+ use App\Models\BancosModel;
+@endphp
 @section('content')
+
 
             <div class="content-wrapper">
                 <div class="content">
@@ -181,8 +186,17 @@
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
-                                    @forelse ($contas as $conta)
+                                     @forelse ($contas as $conta)
+                                        @if ($conta)
+                                            @php 
+                                            $categoria = DetailsContasPagarModel::where('id_tiny', $conta->id_tiny)->first()
+                                            @endphp
+
+                                                 
+                                        @endif
+                                        
                                         <tr>
                                             <td>{{ $conta->id_tiny}}</td>
                                             <td>{{ $conta->empresa}}</td>
@@ -190,7 +204,8 @@
                                             <td>{{ Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y')}}</td>
                                             <td>{{ $conta->valor}}</td>
                                             <td>{{ $conta->situacao}}</td>
-                                            <td>{{ $conta->categoria}}</td><td>
+                                            <td>{{ $categoria->categoria ?? 'sem categoria'}}</td>
+                                            <td>
                                                 <button class="btn btn-sm btn-warning verConta"
                                                 data-id="{{ $conta->id}}"
                                                 data-id_tiny="{{ $conta->id_tiny}}"
@@ -199,7 +214,7 @@
                                                 data-valor="{{ $conta->valor}}"
                                                 data-empresa="{{ $conta->empresa}}"
                                                 data-situacao="{{ $conta->situacao}}"
-                                                data-categoria="{{ $conta->categoria}}"
+                                                data-categoria="{{ $categoria->categoria}}"
                                                 data-bs-toggle="offcanvas"
                                                 data-bs-target="#verConta"
                                                 >
@@ -207,7 +222,9 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                            
                                     @empty
+                                    
                                         <tr>
                                             <td colspan="9" class="text-center danger">Nenhum registro localizado !!!</td>
                                         </tr>
@@ -222,6 +239,7 @@
                     </div>
                 </div>
             </div>
+        
     <!--offcanvas ver -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="verConta" aria-labelledby="verContaLabel"
         style="width: 800px">
@@ -233,37 +251,40 @@
             <form action="#" method="post">
                 <div class="row">
                     <div class="col-6">
-                        <input type="hidden" id="input_empresa" value="" name="empresa">
+                        <input type="text" id="input_id" value="" name="id">
+                        <input type="text" id="input_empresa" value="" name="empresa">
                         <label for="id_tiny" class="form-label">ID (Tiny): </label>
                         <input type="text" id="input_id_tiny" value="" class="form-control" name="id_tiny" readonly>
                     </div>
                     <div class="col-6">
                         <label for="contaOrigem" class="form-label">Banco: </label>
-                        <select name="contaOrigem" id="contaOrigem" class="form-control">
+                        <input type="text" id="input_conta" value="" name="conta">
+                        {{-- <select name="contaOrigem" id="contaOrigem" class="form-control">
                             @if ($bancos)
                                 <option value="{{ $banco->nome }}">{{ $banco->nome }}</option>
                             @endif
-                        </select>
+                        </select> --}}
                     </div>
 
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <label for="data" class="form-label">Data: </label>
-                        <input type="date" id="data" value="" class="form-control" name="data">
+                        <label for="data" class="form-label">Data Vencimento: </label>
+                        <input type="date" id="input_vencimento" value="" class="form-control" name="data">
                     </div>
                     <div class="col-6">
                         <label for="categoria" class="form-label">Categoria: </label>
-                        <select name="categoria" id="categoria" class="form-control">
-                            @if ($detalhes)
-                            <option value="{{ $detalhe->categoria }}">{{ $detalhe->categoria }}</option>
-                        </select>
+                        {{-- <select name="categoria" id="categoria" class="form-control"> --}}
+                            {{-- @if ($detalhes)
+                            <option value="{{ $detalhe->categoria }}">{{ $detalhe->categoria }}</option> --}}
+                        {{-- </select> --}}
+                        <input type="text" id="input_categoria" name="categoria" value="">
                     </div>
 
                 </div>
                 <div class="me-1 ms-1 mx-auto">
                     <label for="historico" class="form-label">Detalhes / Informações adicionais: </label>
-                    <textarea class="form-control" name="historico" id="historico" cols="30" rows="5"></textarea>
+                    <textarea class="form-control" name="historico" id="input_historico" cols="30" rows="5"></textarea>
                 </div>
                 <div class="row mx-auto">
                     <div class="col-md-3">
@@ -294,7 +315,6 @@
             </form>
 
         </div>
-    </div>
     </div>
 
 
@@ -375,36 +395,47 @@
 
                 </div>
             </div>
-        </div>
+        </div> --}}
 
             <script>
                 document.querySelectorAll('.verConta').forEach(button => {
                     button.addEventListener('click', function () {
                         //ler as informaçores via botao
-                        const dataIdTiny = this.getAttribute('data-idTiny');
-                        const dataValor = this.getAttribute('data-valor');
-                        const dataHistorico = this.getAttribute('data-historico');
+                        const id = this.getAttribute('data-id');
+                        const id_tiny = this.getAttribute('data-id_tiny');
+                        const nome_cliente = this.getAttribute('data-nome_cliente');
+                        const vencimento = this.getAttribute('data-vencimento');
+                        const valor = this.getAttribute('data-valor');
                         const empresa = this.getAttribute('data-empresa');
+                        const situacao = this.getAttribute('data-situacao');
+                        const categoria = this.getAttribute('data-categoria'); 
+                        
                         //armazena o dado para ser exibido
-                        const inputdataIdTiny = document.querySelector('#id_tiny');
-                        const inputdataValor = document.querySelector('#valorPago');
-                        const inputdataHistorico = document.querySelector('#historico');
-                        const inputdataEmpresa = document.querySelector('#inputEmpresa')
-
+                        const input_id = document.querySelector('#input_id');
+                        const input_id_tiny = document.querySelector('#input_id_tiny');
+                        const input_nome_cliente = document.querySelector('#input_nome_cliente');
+                        const input_vencimento = document.querySelector('#input_vencimento');
+                        const input_valor = document.querySelector('#input_valor');
+                        const input_empresa = document.querySelector('#input_empresa');
+                        const input_situacao = document.querySelector('#input_situacao');
+                        const input_categoria = document.querySelector('#input_categoria');
 
                         // Atualiza o input com os dados
-                        inputdataIdTiny.value = dataIdTiny;
-                        inputdataValor.value = dataValor;
-                        inputdataHistorico.value = dataHistorico;
-                        inputdataEmpresa.value = empresa;
+                        input_id.value = id;
+                        input_id_tiny.value = id_tiny;
+                        input_nome_cliente.value = nome_cliente;
+                        input_vencimento.value = vencimento;
+                        input_valor.value = valor;
+                        input_empresa.value = empresa;
+                        input_situacao.value = situacao;
+                        input_categoria.value = categoria;
+                        
 
 
 
                     });
                 });
+                
 
-
-
-
-            </script> --}}
+            </script> 
 @endsection

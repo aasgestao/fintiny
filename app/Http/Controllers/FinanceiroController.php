@@ -78,7 +78,6 @@ class FinanceiroController extends Controller
 
         $clientes = ClienteEmpresaModel::all();
 
-
         $contas = ContasPagarModel::when($request->filled("empresa"), function ($query) use ($request) {
             $query->where("empresa", "like", "%" . $request->input("empresa") . "%");
         })
