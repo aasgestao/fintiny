@@ -32,6 +32,7 @@
                         </form>
                     </div>
                     <div class="container-fluid">
+                        <x-alert/>
                         <table class="table table-stripped">
                             <thead>
                                 <tr>
@@ -64,6 +65,9 @@
                                             <a href="{{ route('empresa.show', ['id'=> $empresa->id ])}}" class="btn btn-sm btn-info">
                                                 <i class="fas fa-eye"></i>
                                             </a>
+                                            <button class="btn btn-sm btn-primary insertBank" data-banco-id="{{$empresa->id }}" data-bs-toggle="modal" data-bs-target="#insertBank">
+                                                <i class="fa-solid fa-building-columns"></i>
+                                            </button>
                                             {{-- <form action="{{ route('empresa.destroy', ['id' => $empresa->id])}}" method="post">
                                                 @csrf
                                                 @method('DELETE')
@@ -175,6 +179,50 @@
             </div>
         </div>
 
+    <!-- Modal -->
+<div class="modal fade" id="insertBank" tabindex="-1" aria-labelledby="insertBankLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="insertBankLabel">Inserir Banco</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('empresa.banco')}}" method="post">
+            @csrf
+            @method('POST')
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control"  name="nome">
+                <label for="nome">Nome do Banco: </label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control"  name="conta_tiny">
+                <label for="conta_tiny">Código do Banco: </label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control"  name="plano_conta">
+                <label for="plano_conta">Código Plano Contas: </label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="input_banco_id" name="cliente_id" readonly>
+                <label for="cliente_id">Cliente (ID): </label>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">Criar</button>
+            </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
     <script>
         document.querySelectorAll('.editClientes').forEach(button => {
             button.addEventListener('click', function () {
@@ -199,6 +247,17 @@
 
         })
     });
+
+
+    document.querySelectorAll('.insertBank').forEach(button => {
+            button.addEventListener('click', function () {
+                id_cliente = this.getAttribute('data-banco-id');
+
+                inputDataBancoId = document.querySelector('#input_banco_id');
+
+                inputDataBancoId.value = id_cliente;
+            });
+        });
     </script>
 
 <script>

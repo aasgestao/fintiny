@@ -20,6 +20,32 @@
                         <i class="fas fa-square-plus"></i>
                     </a>
                 </div>
+                <div class="card-body">
+                        <form action="{{ route('financeiro.lancamentos')}}" method="get">
+                            <div class="row">
+                                <div class="form-floating col-4">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="Digite dua busca ..." name="busca" value="{{ old('busca', $busca) }}">
+                                    <label for="floatingInput">Busca</label>
+                                </div>
+
+                                <div class="form-floating col-3">
+                                    <input type="date" class="form-control" id="data_inicial"  name="data_inicial" value="{{ old('data_inicial', $data_inicial) }}">
+                                    <label for="data_inicial">Data Inicial</label>
+                                </div>
+
+                                <div class="form-floating col-3">
+                                    <input type="date" class="form-control" id="data_final"  name="data_final" value="{{ old('data_final', $data_final) }}">
+                                    <label for="data_final">Data Final</label>
+                                </div>
+
+                                <div class="d-flex mx-auto col mb-2">
+                                    <button type="submit" class="btn btn-sm btn-primary me-2"><i class="fas fa-search"></i>Buscar</button>
+                                    <a class="btn btn-sm btn-warning me-2" href="{{ route('financeiro.lancamentos')}}"><i class="fas fa-trash"></i>Limpar</a>
+                                    <a class="btn btn-sm btn-success me-2" href="{{ route('exportLancamentos')}}"><i class="fa-regular fa-file-excel"></i> Exportar</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
 
                 <div class="card-body">
                     <table class="table table-sm table-resposive table-striped">

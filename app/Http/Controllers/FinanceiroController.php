@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ContasExport;
+use App\Exports\LancamentosContabeisExport;
 use App\Models\ClienteEmpresaModel;
 use App\Models\ContasModel;
 use App\Models\ContasPagarModel;
@@ -63,12 +64,41 @@ class FinanceiroController extends Controller
             'data_final'=> $request->input("data_final"),
         ]);
     }
-    public function lancamentosIndex()
+    public function lancamentosIndex(Request $request)
     {
+        $lancamentos = LancamentosContabeisModel::when($request->filled("busca"), function ($query) use ($request) {
+            $query->where("historico", "like", "%" . $request->input("busca") . "%");
+        })
+            ->when($request->filled("data_inicial"), function ($query) use ($request) {
+                $query->where("data", ">=", $request->input("data_inicial"));
+            })
+            ->when($request->filled("data_final"), function ($query) use ($request) {
+                $query->where("data", "<=", $request->input("data_final"));
+            })
+            ->when($request->filled("conta_debito"), function ($query) use ($request) {
+                $query->where("conta_debito", $request->input("busca"));
+            })
+            ->when($request->filled("conta_credito"), function ($query) use ($request) {
+                $query->where("conta_credito", $request->input("busca"));
+            })
+            ->when($request->filled("id_tiny"), function ($query) use ($request) {
+                $query->where("id_tiny", $request->input("busca"));
+            })
+
+            ->when($request->filled("valor"), function ($query) use ($request) {
+                $query->where("valor", $request->input("busca"));
+            })
+            ->orderByDesc('created_at')
+            ->paginate(30)
+            ->withQueryString();
+
 
         return view('financeiro.lancamentos', [
             'title'=> 'Lançamentos Contabeis 2.0',
-            'lancamentos'=> LancamentosContabeisModel::paginate(50),
+            'lancamentos'=> $lancamentos,
+            'busca'=> $request->busca,
+            'data_inicial'=> $request->data_inicial,
+            'data_final'=> $request->data_final,
         ]);
     }
 
@@ -140,6 +170,11 @@ class FinanceiroController extends Controller
     {
         $data = date('dmY_Hsi');
         return Excel::download(new ContasExport($request), "contas_filtradas_$data.xlsx");
+    }
+    public function exportLancamentos(Request $request)
+    {
+        $data = date('dmY_Hsi');
+        return Excel::download(new LancamentosContabeisExport($request), "lancamentos_$data.xlsx");
     }
     public function contas_receber()
     {

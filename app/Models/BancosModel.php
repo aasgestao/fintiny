@@ -14,5 +14,5 @@ cliente_id*/
 
     protected $table = 'bancos';
 
-    protected $fillable = ['nome', 'codigo_tiny', 'cliente_id'];
+    protected $fillable = ['nome', 'conta_tiny', 'cliente_id', 'plano_conta'];
 }

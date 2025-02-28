@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArquivosModel;
+use App\Models\BancosModel;
 use App\Models\ClienteEmpresaModel;
 use App\Models\ContasModel;
 use App\Models\PlanoContasModel;
@@ -145,6 +146,9 @@ public function import_contas(Request $request)
                         'nro_documento' => $data[10],
                     ];
 
+                    $banco_conta = BancosModel::where('nome', $data[9])->first();
+                    $banco_conta = $banco_conta->plano_conta ?? "";
+
                     //dd($insertData);
                     // Insere ou atualiza os dados
                     if (!$idExistente) {
@@ -160,15 +164,20 @@ public function import_contas(Request $request)
                     $conta_parceiro = $parceiro->conta_resumida ?? "";
                     }
                 
-                     //dd($conta_parceiro);
+                        //verificar de o banco tem plano de conta
+                        if($banco_conta != null){
+                            $contaContabil = $banco_conta;
+                        }else{
+                            $contaContabil = $data[9];
+                        }
                     
 
                         if ($data[3] == 'C') {
-                            $conta_debito = $data[9];
+                            $conta_debito = $contaContabil;
                             $conta_credito = $conta_parceiro ?? "";
                         } else {
                             $conta_debito = $conta_parceiro ?? "";
-                            $conta_credito = $data[9];
+                            $conta_credito = $contaContabil;
                         }
                         
 

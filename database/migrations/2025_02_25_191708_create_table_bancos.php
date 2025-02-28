@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('bancos', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('codigo_tiny');
+            $table->string('conta_tiny');
+            $table->string('plano_conta');
             $table->foreignId('cliente_id')->constrained('clienteempresa', 'id')->onDelete('cascade');
             //$table->foreign('cliente_id')->references('id')->on('clienteempresa');
             $table->timestamps();

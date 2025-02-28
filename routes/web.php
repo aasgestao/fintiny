@@ -27,6 +27,8 @@ Route::get('/ver-empresa/{id}', [ClienteEmpresaController::class , 'show'])->nam
 Route::post('/clientes-create', [ClienteEmpresaController::class , 'store'])->name('empresa.create');
 Route::put('/clientes-update/{id}', [ClienteEmpresaController::class, 'update'])->name('empresa.update');
 Route::delete('/clientes-delete/{id}', [ClienteEmpresaController::class , 'destroy'])->name('empresa.destroy');
+Route::post('empresa-banco', [ClienteEmpresaController::class, 'insertBank'])->name('empresa.banco');
+Route::put('empresa-banco/{id}', [ClienteEmpresaController::class, 'editBank'])->name('empresa.editBanco');
 
 
 //Rotas de usuarios
@@ -44,6 +46,7 @@ Route::post('/importacoes/import_planocontas', [ImportacoesController::class, 'i
 
 //Rotas para exportação
 Route::get('financeiro/export/', [FinanceiroController::class, 'export'])->name('exportExcel');
+Route::get('financeiro/exportLancamentos/', [FinanceiroController::class, 'exportLancamentos'])->name('exportLancamentos');
 
 
 Route::get('/financeiro' , [FinanceiroController::class, 'index'])->name('financeiro.index');
