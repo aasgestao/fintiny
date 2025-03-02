@@ -30,6 +30,22 @@ class EmailController extends Controller
             'title' => 'Emails | Criando',
         ]);
     }
+    public function read($id)
+    {
+        $emails= EmailModel::where('id', $id)->first();
+        
+        //dd($emails);
+        return view('email.read', [
+            'title'=> "Email nº $id | 2ACONT ",
+            'de'=> $emails->de,
+            'para'=> $emails->para,
+            'assunto'=> $emails->assunto,
+            'copia'=> $emails->copia,
+            'recebido_em'=> $emails->created_at,
+            'corpo_email'=> $emails->corpo_email,
+
+         ]);
+    }
     public function send(Request $request)
     {
         
