@@ -25,8 +25,8 @@
                                     {{-- <label for="floatingInput">Cliente</label> --}}
                                 </div>
                                 <div class="d-flex mx-auto col mb-2">
-                                    <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-search me-2"></i>Pesquisar</button>
-                                    <a class="btn btn-sm btn-warning" href="{{ route('empresa.index')}}"><i class="fas fa-trash me-3"></i>Limpar</a>
+                                    <button type="submit" class="btn btn-sm btn-primary me-2"><i class="fas fa-search me-2"></i>Pesquisar</button>
+                                    <a class="btn btn-sm btn-warning me-2" href="{{ route('empresa.index')}}"><i class="fas fa-trash me-3"></i>Limpar</a>
                                 </div>
                             </div>
                         </form>
@@ -103,17 +103,17 @@
 
                             <div class="mb-3">
                                 <label for="cnpj" class="form-label">CNPJ do Cliente: </label>
-                                <input type="text" class="form-control" id="input_cnpj" placeholder="cnpj do Cliente" name="cnpj">
+                                <input type="text" class="form-control"  placeholder="cnpj do Cliente" name="cnpj">
                             </div>
 
                             <div class="mb-3">
                                 <label for="nome" class="form-label">Nome do Cliente: </label>
-                                <input type="text" class="form-control" id="nome" placeholder="Nome do Cliente" name="nome">
+                                <input type="text" class="form-control"  placeholder="Nome do Cliente" name="nome">
                             </div>
 
                             <div class="mb-3">
                                 <label for="token_tiny" class="form-label">Token(TINY): </label>
-                                <input type="text" class="form-control" id="token_tiny" placeholder="token ERP Tiny "name="token_tiny">
+                                <input type="text" class="form-control" placeholder="token ERP Tiny "name="token_tiny">
                             </div>
 
                             <div class="modal-footer">
@@ -230,17 +230,17 @@
             const nome = this.getAttribute('data-nome');
             const token = this.getAttribute('data-token');
             const cnpj = this.getAttribute('data-cnpj');
-
+                //alert(cnpj);
             const form = document.querySelector('#editClienteForm');
             const inputId = document.querySelector('#input_id');
             const inputNome = document.querySelector('#input_nome');
-            const inpuCnpj = document.querySelector('#input_cnpj')
+            const inputCnpj = document.querySelector('#input_cnpj')
             const inputToken = document.querySelector('#input_token_tiny');
 
             inputId.value = id;
             inputNome.value = nome;
             inputToken.value = token;
-            inpuCnpj.value = cnpj;
+            inputCnpj.value = cnpj;
 
             // Define o action do formulário dinamicamente
             form.action = `/clientes-update/${id}`;

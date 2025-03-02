@@ -191,10 +191,9 @@
                                      @forelse ($contas as $conta)
                                         @if ($conta)
                                             @php 
-                                            $categoria = DetailsContasPagarModel::where('id_tiny', $conta->id_tiny)->first()
-                                            @endphp
-
-                                                 
+                                                $categoria = DetailsContasPagarModel::where('id_tiny', $conta->id_tiny)->first();
+                                                $categoria_nome = $categoria ? $categoria->categoria : 'Sem Categoria';
+                                            @endphp   
                                         @endif
                                         
                                         <tr>
@@ -204,7 +203,7 @@
                                             <td>{{ Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y')}}</td>
                                             <td>{{ $conta->valor}}</td>
                                             <td>{{ $conta->situacao}}</td>
-                                            <td>{{ $categoria->categoria ?? 'sem categoria'}}</td>
+                                            <td>{{ $categoria_nome }}</td>
                                             <td>
                                                 <button class="btn btn-sm btn-warning verConta"
                                                 data-id="{{ $conta->id}}"
@@ -214,7 +213,7 @@
                                                 data-valor="{{ $conta->valor}}"
                                                 data-empresa="{{ $conta->empresa}}"
                                                 data-situacao="{{ $conta->situacao}}"
-                                                data-categoria="{{ $categoria->categoria}}"
+                                                data-categoria="{{ $categoria_nome}}"
                                                 data-bs-toggle="offcanvas"
                                                 data-bs-target="#verConta"
                                                 >
@@ -252,7 +251,6 @@
                 <div class="row">
                     <div class="col-6">
                         <input type="text" id="input_id" value="" name="id">
-                        <input type="text" id="input_empresa" value="" name="empresa">
                         <label for="id_tiny" class="form-label">ID (Tiny): </label>
                         <input type="text" id="input_id_tiny" value="" class="form-control" name="id_tiny" readonly>
                     </div>
@@ -260,9 +258,10 @@
                         <label for="contaOrigem" class="form-label">Banco: </label>
                         <input type="text" id="input_conta" value="" name="conta">
                         {{-- <select name="contaOrigem" id="contaOrigem" class="form-control">
-                            @if ($bancos)
-                                <option value="{{ $banco->nome }}">{{ $banco->nome }}</option>
-                            @endif
+                            @if ($banco_nome)
+                                <option value="{{ $banco_nome}}">{{ $banco_nome}}</option>
+                             @endif
+                            
                         </select> --}}
                     </div>
 
@@ -270,15 +269,16 @@
                 <div class="row">
                     <div class="col-6">
                         <label for="data" class="form-label">Data Vencimento: </label>
-                        <input type="date" id="input_vencimento" value="" class="form-control" name="data">
+                        <input type="date" id="input_data" value="" class="form-control" name="data">
                     </div>
                     <div class="col-6">
                         <label for="categoria" class="form-label">Categoria: </label>
-                        {{-- <select name="categoria" id="categoria" class="form-control"> --}}
-                            {{-- @if ($detalhes)
-                            <option value="{{ $detalhe->categoria }}">{{ $detalhe->categoria }}</option> --}}
-                        {{-- </select> --}}
-                        <input type="text" id="input_categoria" name="categoria" value="">
+                        <select name="categoria" id="categoria" class="form-control"> 
+                            @if ($categoria_nome)
+                                <option value="{{ $categoria_nome }}">{{ $categoria_nome }}</option>
+                            @endif
+                        </select>
+                        {{-- <input type="text" id="input_categoria" name="categoria" value=""> --}}
                     </div>
 
                 </div>
@@ -398,44 +398,37 @@
         </div> --}}
 
             <script>
-                document.querySelectorAll('.verConta').forEach(button => {
-                    button.addEventListener('click', function () {
-                        //ler as informaçores via botao
-                        const id = this.getAttribute('data-id');
-                        const id_tiny = this.getAttribute('data-id_tiny');
-                        const nome_cliente = this.getAttribute('data-nome_cliente');
-                        const vencimento = this.getAttribute('data-vencimento');
-                        const valor = this.getAttribute('data-valor');
-                        const empresa = this.getAttribute('data-empresa');
-                        const situacao = this.getAttribute('data-situacao');
-                        const categoria = this.getAttribute('data-categoria'); 
-                        
-                        //armazena o dado para ser exibido
-                        const input_id = document.querySelector('#input_id');
-                        const input_id_tiny = document.querySelector('#input_id_tiny');
-                        const input_nome_cliente = document.querySelector('#input_nome_cliente');
-                        const input_vencimento = document.querySelector('#input_vencimento');
-                        const input_valor = document.querySelector('#input_valor');
-                        const input_empresa = document.querySelector('#input_empresa');
-                        const input_situacao = document.querySelector('#input_situacao');
-                        const input_categoria = document.querySelector('#input_categoria');
+                document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.verConta').forEach(button => {
+        button.addEventListener('click', function () {
+            // Ler as informações via botão
+            const id = this.getAttribute('data-id');
+            const data = this.getAttribute('data-data');
+            const id_tiny = this.getAttribute('data-id_tiny');
+            const nome_cliente = this.getAttribute('data-nome_cliente');
+            const vencimento = this.getAttribute('data-vencimento');
+            const valor = this.getAttribute('data-valor');
+            const empresa = this.getAttribute('data-empresa');
+            const situacao = this.getAttribute('data-situacao');
+            const categoria = this.getAttribute('data-categoria'); 
+            let form = 
 
-                        // Atualiza o input com os dados
-                        input_id.value = id;
-                        input_id_tiny.value = id_tiny;
-                        input_nome_cliente.value = nome_cliente;
-                        input_vencimento.value = vencimento;
-                        input_valor.value = valor;
-                        input_empresa.value = empresa;
-                        input_situacao.value = situacao;
-                        input_categoria.value = categoria;
-                        
+            // Armazena os dados nos inputs
+            document.querySelector('#input_id').value = id;
+            document.querySelector('#input_id_tiny').value = id_tiny;
+            document.querySelector('#input_nome_cliente').value = nome_cliente;
+            document.querySelector('#input_vencimento').value = vencimento;
+            document.querySelector('#input_valor').value = valor;
+            document.querySelector('input_data').value = data;
+            document.querySelector('#input_empresa1').value = empresa;
+            document.querySelector('#input_situacao').value = situacao;
+            document.querySelector('#input_categoria').value = categoria;
 
+            alert("Empresa: " + empresa + " - Input Empresa: " + document.querySelector('#input_empresa1').value);
+        });
+    });
+});
 
-
-                    });
-                });
-                
 
             </script> 
 @endsection

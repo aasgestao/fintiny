@@ -20,4 +20,6 @@ protected $primaryKey = 'id';
         'id_tiny',
     ];
 
+    
+
 }

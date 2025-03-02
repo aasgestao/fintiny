@@ -68,7 +68,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fa-solid fa-money-check-dollar"></i>
+                    <i class="fa-solid fa-fw fa-sack-dollar"></i>
                     <span>Financeiro</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -77,30 +77,43 @@
                         <a class="collapse-item" href="{{ route('financeiro.index')}}">Contas</a>
                         <a class="collapse-item" href="{{ route('financeiro.contas_pagar')}}">Pagar</a>
                         <a class="collapse-item" href="{{ route('financeiro.contas_receber')}}">Receber</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseContabilidade"
+                    aria-expanded="true" aria-controls="collapseContabilidade">
+                    <i class="fa-solid fa-fw fa-receipt"></i>
+                    <span>Contabilidade</span>
+                </a>
+                <div id="collapseContabilidade" class="collapse" aria-labelledby="headingContabilidade"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Operações:</h6>
                         <a class="collapse-item" href="{{ route('financeiro.lancamentos')}}">Lancamentos Contábeis</a>
                         <a class="collapse-item" href="{{ route('plano_contas')}}">Plano de Contas</a>
                     </div>
                 </div>
             </li>
 
-            <!-- Nav Item - Utilities Collapse Menu -->
-            {{-- <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
+             <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSolicitacoes"
+                    aria-expanded="true" aria-controls="collapseSolicitacoes">
+                    <i class="fas fa-fw fa-envelope"></i>
+                    <span>Solicitações</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                <div id="collapseSolicitacoes" class="collapse" aria-labelledby="headingSolicitacoes"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
+                        <h6 class="collapse-header">Operações:</h6>
+                        
+                        <a class="collapse-item" href="{{ route('email.index')}}">Email</a>
                     </div>
                 </div>
-            </li> --}}
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">

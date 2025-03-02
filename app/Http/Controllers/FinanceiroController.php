@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ContasExport;
 use App\Exports\LancamentosContabeisExport;
+use App\Models\BancosModel;
 use App\Models\ClienteEmpresaModel;
 use App\Models\ContasModel;
 use App\Models\ContasPagarModel;
@@ -149,6 +150,7 @@ class FinanceiroController extends Controller
             ->paginate(30)
             ->withQueryString();
 
+        
 
 
         return view('financeiro/contas_pagar', [

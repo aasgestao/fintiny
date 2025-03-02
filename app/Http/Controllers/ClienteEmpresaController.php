@@ -29,12 +29,12 @@ class ClienteEmpresaController extends Controller
     public function show($id)
     {
         $empresa = ClienteEmpresaModel::where('id', $id)->first();
-        $bancos = BancosModel::where('cliente_id', $id)->orderBY('nome')->get();
+        $bancos = BancosModel::where('cliente_id', $id)->get();
         //dd($empresa);
         return view('empresa.show' , [
             'title'=> 'Visualizado Cliente',
             'empresa'=> $empresa,
-            'bancos'=> $bancos,
+            'bancos'=> $bancos ?? '',
         ]);
     }
     public function store(Request $request)
@@ -54,6 +54,7 @@ class ClienteEmpresaController extends Controller
         //dd($empresa);
         $empresa->update([
             'nome'=> $request->nome,
+            'cnpj'=> $request->cnpj,
             'token_tiny'=>$request->token_tiny,
         ]);
 
