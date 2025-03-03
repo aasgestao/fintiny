@@ -67,6 +67,7 @@
                                         
                                     </tbody>
                                 </table>
+                                {{ $emails->links() }}
                             </div>
                         </div>
                     </div>

@@ -83,7 +83,7 @@ public function import_contas(Request $request)
 
     $empresa = $request->input('empresa');
     $file = $request->file('conta'); // Pega o arquivo do input
-    
+    //dd($empresa);
     if ($file->isValid()) {
         $newFileName = "$nome$data-$empresa.csv"; // Gera um nome único para o arquivo
         $filePath = $file->storeAs('uploads', $newFileName); // Salva o arquivo em storage/app/uploads/
@@ -192,7 +192,7 @@ public function import_contas(Request $request)
                         ];
                         //dd($dados);
 
-                    $financeiro->lancamentosContabeis($dados);
+                  $financeiro->lancamentosContabeis($dados);
                     
                     
                 }

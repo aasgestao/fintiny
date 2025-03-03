@@ -73,6 +73,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Mudar CNPJ
     Route::post('/mudar-cnpj', [TrocarCnpj::class, 'mudarCnpj'])->name('mudar.cnpj');
+
+    //Rota de download
+    Route::get('/download/{file}' , function($file) {
+        return Storage::download("uploads/$file");
+    })->name('file.download');
     
     
 });

@@ -10,6 +10,6 @@ class ArquivosModel extends Model
     
     protected $table = 'arquivos';
 
-    protected $fillable = ['path', 'empresa'];
+    protected $fillable = ['path', 'empresa', 'email_id', 'importacao_id'];
 }
 

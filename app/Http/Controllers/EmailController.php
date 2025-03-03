@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SolicitacaoEmail;
+use App\Models\ArquivosModel;
 use App\Models\EmailModel;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,8 +15,8 @@ class EmailController extends Controller
 {
     public function index()
     {
-        $emails = EmailModel::orderByDesc('created_at')->get();
-
+        $emails = EmailModel::orderByDesc('created_at')->paginate(6);
+        
         return view('email.inbox', [
             'title'=> 'Emails',
             'emails'=> $emails,
@@ -26,13 +27,16 @@ class EmailController extends Controller
     {
         $emails = EmailModel::all();
 
+
         return view('email.compose', [
             'title' => 'Emails | Criando',
+            'count' => $emails->count(),
         ]);
     }
     public function read($id)
     {
         $emails= EmailModel::where('id', $id)->first();
+        $arquivos = ArquivosModel::where('email_id', $id)->get();
         
         //dd($emails);
         return view('email.read', [
@@ -43,19 +47,49 @@ class EmailController extends Controller
             'copia'=> $emails->copia,
             'recebido_em'=> $emails->created_at,
             'corpo_email'=> $emails->corpo_email,
+            'arquivos'=> $arquivos,
 
          ]);
     }
     public function send(Request $request)
     {
-        
+
+        $file = $request->file('anexo'); // Pega o arquivo do input
+        //dd($file);
+       
+
+        if ($file && $file->isValid()) {
+                $date = date('Ymd_His');
+                $nome = 'Anexo_importado_';
+
+                // Obtém a extensão original do arquivo
+                $extension = $file->getClientOriginalExtension();
+                //dd($extension);
+                // Gera um nome único mantendo a extensão original
+                $newFileName = "$nome$date.$extension";
+
+                // Salva o arquivo em storage/app/uploads/
+                $filePath = $file->storeAs('uploads', $newFileName);
+
+                // Obtém o caminho completo do arquivo
+                $fullPath = storage_path("app/uploads/$newFileName");
+
+            //dd("Arquivo salvo em: " . $extension);
+            
+            };
+                
+
+
+            
+
+
         DB::beginTransaction();
         
         try {
 
            $email_solicitacao = EmailModel::where('id',$request->input('id') )->first();
 
-           //dd(!$email_solicitacao);
+           //dd(!$email_solicitacao, $request);
             if(!$email_solicitacao){
 
                 //dd($request->input('cliente_id'));
@@ -74,12 +108,24 @@ class EmailController extends Controller
 
                 $id_email = $novo->id;
                 //dd($id_email);
+                $pathExiste = ArquivosModel::where('path', $newFileName)->first();
+
+                if(!$pathExiste){
+                        $arquivo= ArquivosModel::create([
+                        'path'=> $newFileName,
+                        'email_id' => $id_email,
+                    ]);
+                    Log::info("Arquivo salvo com sucesso, registrado sob o número $arquivo->id, vinculado ao emails $novo->id !");
+
+                }
+
+                
 
 
                 $email_solicitacao = EmailModel::where('id', $id_email )->first();
+                //dd($email_solicitacao);
 
-
-                Mail::to(env('MAIL_TO'))->send(new SolicitacaoEmail($email_solicitacao));
+                Mail::to(env('MAIL_TO'))->send(new SolicitacaoEmail($email_solicitacao, $file , $extension));
 
                 Log::info("Email enviado para $novo->para com sucesso, registrado sob o número $novo->id !" );
 

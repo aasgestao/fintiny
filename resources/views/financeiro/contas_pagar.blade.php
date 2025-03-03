@@ -274,11 +274,13 @@
                     <div class="col-6">
                         <label for="categoria" class="form-label">Categoria: </label>
                         <select name="categoria" id="categoria" class="form-control"> 
-                            @if ($categoria_nome)
-                                <option value="{{ $categoria_nome }}">{{ $categoria_nome }}</option>
-                            @endif
+                            {{-- @if ($categoria_nome)
+                                {{-- <option value="{{ $categoria_nome }}">{{ $categoria_nome }}</option>
+                            @else
+                                 <option value="">Sem categoria</option>
+                            @endif --}}
                         </select>
-                        {{-- <input type="text" id="input_categoria" name="categoria" value=""> --}}
+                        <input type="text" id="input_categoria" name="categoria" value="">
                     </div>
 
                 </div>

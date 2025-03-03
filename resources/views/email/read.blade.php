@@ -51,7 +51,20 @@
                             {{  $corpo_email }}
                         </div>
                     </div>
-
+                    <hr>
+                    <div class="anexo">
+                        <span> Anexos </span>
+                        @forelse ($arquivos as $arquivo)
+                            <ul><a href="{{ route('file.download', $arquivo->path )}}"> 
+                                <i class="fa-regular fa-file " style="width: 40px; height: auto;"></i>
+                            </a>{{ $arquivo->path }}
+                        </ul>
+                            
+                        @empty
+                            <ul> Sem anexos !</ul>
+                        @endforelse
+                    </div>
+                    <hr>
                     
                 </div>
                 <div class="card-footer">
