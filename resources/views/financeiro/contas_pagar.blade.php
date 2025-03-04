@@ -28,7 +28,7 @@
                             <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
                                     <div class="row">
-                                        <form action="{{ route('financeiro.getPedidos')}}" method="post">
+                                        <form action="{{ route('financeiro.getContas')}}" method="post">
                                             @csrf
                                             @method('POST')
                                             <div class="row">
@@ -193,6 +193,7 @@
                                             @php 
                                                 $categoria = DetailsContasPagarModel::where('id_tiny', $conta->id_tiny)->first();
                                                 $categoria_nome = $categoria ? $categoria->categoria : 'Sem Categoria';
+                                                $bancos = BancosModel::where('empresa', $conta->empresa)->get();
                                             @endphp   
                                         @endif
                                         
@@ -202,7 +203,13 @@
                                             <td>{{ $conta->nome_cliente}}</td>
                                             <td>{{ Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y')}}</td>
                                             <td>{{ $conta->valor}}</td>
-                                            <td>{{ $conta->situacao}}</td>
+                                            <td class="text-center">
+                                                @if ($conta->situacao == 'paga')
+                                                    <i class="fa-solid fa-check-double" style="color: green"></i>
+                                                @else
+                                                    <i class="fa-solid fa-xmark" style="color: red"></i>
+                                                @endif
+                                                </td>
                                             <td>{{ $categoria_nome }}</td>
                                             <td>
                                                 <button class="btn btn-sm btn-warning verConta"
@@ -247,43 +254,48 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="#" method="post">
+            <form action="{{ route('financeiro_pagarConta', 0)}}" method="post">
+                @csrf
+                @method('POST')
                 <div class="row">
+                    <input type="hidden" id="input_id" value="" name="id">
+                    <input type="text" id="input_empresa1" name="empresa">
                     <div class="col-6">
-                        <input type="text" id="input_id" value="" name="id">
                         <label for="id_tiny" class="form-label">ID (Tiny): </label>
                         <input type="text" id="input_id_tiny" value="" class="form-control" name="id_tiny" readonly>
                     </div>
                     <div class="col-6">
                         <label for="contaOrigem" class="form-label">Banco: </label>
-                        <input type="text" id="input_conta" value="" name="conta">
-                        {{-- <select name="contaOrigem" id="contaOrigem" class="form-control">
-                            @if ($banco_nome)
-                                <option value="{{ $banco_nome}}">{{ $banco_nome}}</option>
+                        {{-- <input type="text" id="input_conta" value="" name="conta"> --}}
+                        <select name="contaOrigem" id="contaOrigem" class="form-control">
+                            @if ($bancos)
+                                @foreach ($bancos as $banco)
+                                <option value="{{ $banco->nome}}">{{ $banco->nome}}</option>
+                                @endforeach
                              @endif
                             
-                        </select> --}}
+                        </select>
                     </div>
 
                 </div>
                 <div class="row">
                     <div class="col-6">
                         <label for="data" class="form-label">Data Vencimento: </label>
-                        <input type="date" id="input_data" value="" class="form-control" name="data">
+                        <input type="date" id="input_vencimento" value="" class="form-control" name="data">
                     </div>
                     <div class="col-6">
                         <label for="categoria" class="form-label">Categoria: </label>
                         <select name="categoria" id="categoria" class="form-control"> 
-                            {{-- @if ($categoria_nome)
-                                {{-- <option value="{{ $categoria_nome }}">{{ $categoria_nome }}</option>
-                            @else
-                                 <option value="">Sem categoria</option>
-                            @endif --}}
+                            @if ($categoria_nome)
+                                <option value="{{ $categoria_nome }}">{{ $categoria_nome }}</option>
+                           @endif
                         </select>
-                        <input type="text" id="input_categoria" name="categoria" value="">
+                        {{-- <input type="text" id="input_categoria" name="categoria" value=""> --}}
                     </div>
 
                 </div>
+                {{-- valor original --}}
+                <input type="text" id="input_valor">
                 <div class="me-1 ms-1 mx-auto">
                     <label for="historico" class="form-label">Detalhes / Informações adicionais: </label>
                     <textarea class="form-control" name="historico" id="input_historico" cols="30" rows="5"></textarea>
@@ -291,23 +303,23 @@
                 <div class="row mx-auto">
                     <div class="col-md-3">
                         <label for="valorTaxas" class="form-label">Taxas: </label>
-                        <input class="form-control" type="text" name="valorTaxas">
+                        <input class="form-control" id="taxas" type="text" name="valorTaxas">
                     </div>
                     <div class="col-md-2">
                         <label for="valorJuros" class="form-label">Juros: </label>
-                        <input class="form-control" type="text" name="valorJuros">
+                        <input class="form-control" id="juros" type="text" name="valorJuros">
                     </div>
                     <div class="col-md-2">
                         <label for="valorDesconto" class="form-label">Desconto: </label>
-                        <input class="form-control" type="text" name="valorDesconto">
+                        <input class="form-control" id="desconto" type="text" name="valorDesconto">
                     </div>
                     <div class="col-md-2">
                         <label for="valorAcrescimo" class="form-label">Acréscimo: </label>
-                        <input class="form-control" type="text" name="valorAcrescimo">
+                        <input class="form-control" id="acrescimo" type="text" name="valorAcrescimo">
                     </div>
                     <div class="col-md-3">
                         <label for="valorPago" class="form-label">Pago: </label>
-                        <input class="form-control" type="text" name="valorPago" id="valorPago">
+                        <input class="form-control" type="text" name="valorPago" id="valorPago" readonly>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-5">
@@ -401,35 +413,60 @@
 
             <script>
                 document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.verConta').forEach(button => {
-        button.addEventListener('click', function () {
-            // Ler as informações via botão
-            const id = this.getAttribute('data-id');
-            const data = this.getAttribute('data-data');
-            const id_tiny = this.getAttribute('data-id_tiny');
-            const nome_cliente = this.getAttribute('data-nome_cliente');
-            const vencimento = this.getAttribute('data-vencimento');
-            const valor = this.getAttribute('data-valor');
-            const empresa = this.getAttribute('data-empresa');
-            const situacao = this.getAttribute('data-situacao');
-            const categoria = this.getAttribute('data-categoria'); 
-            let form = 
+                    document.querySelectorAll('.verConta').forEach(button => {
+                        button.addEventListener('click', function () {
+                            // Ler as informações via botão
+                            const id = this.getAttribute('data-id');
+                            const data = this.getAttribute('data-data');
+                            const id_tiny = this.getAttribute('data-id_tiny');
+                            const nome_cliente = this.getAttribute('data-nome_cliente');
+                            const vencimento = this.getAttribute('data-vencimento');
+                            const valor = this.getAttribute('data-valor');
+                            const empresa = this.getAttribute('data-empresa');
+                            const situacao = this.getAttribute('data-situacao');
+                            const categoria = this.getAttribute('data-categoria'); 
+                            //console.log(empresa) ;
 
-            // Armazena os dados nos inputs
-            document.querySelector('#input_id').value = id;
-            document.querySelector('#input_id_tiny').value = id_tiny;
-            document.querySelector('#input_nome_cliente').value = nome_cliente;
-            document.querySelector('#input_vencimento').value = vencimento;
-            document.querySelector('#input_valor').value = valor;
-            document.querySelector('input_data').value = data;
-            document.querySelector('#input_empresa1').value = empresa;
-            document.querySelector('#input_situacao').value = situacao;
-            document.querySelector('#input_categoria').value = categoria;
+                            // Armazena os dados nos inputs
+                            document.querySelector('#input_id').value = id;
+                            document.querySelector('#input_id_tiny').value = id_tiny;
+                            //document.querySelector('#input_nome_cliente').value = nome_cliente;
+                            document.querySelector('#input_vencimento').value = vencimento;
+                            document.querySelector('#input_valor').value = valor;
+                            //document.querySelector('input_data').value = data;
+                            document.querySelector('#input_empresa1').value = empresa;
+                            document.querySelector('#input_situacao').value = situacao;
+                            document.querySelector('#input_categoria').value = categoria;
 
-            alert("Empresa: " + empresa + " - Input Empresa: " + document.querySelector('#input_empresa1').value);
-        });
-    });
-});
+                            //alert("Empresa: " + empresa + " - Input Empresa: " + document.querySelector('#input_empresa1').value);
+                        });
+
+                    });
+                });
+
+                function calcularValorPago() {
+                    let taxas = parseFloat(document.getElementById("taxas").value) || 0;
+                    let juros = parseFloat(document.getElementById("juros").value) || 0;
+                    let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+                    let acrescimo = parseFloat(document.getElementById("acrescimo").value) || 0;
+
+                    // Garantir que o valorOriginal seja capturado corretamente
+                    let valorOriginal = parseFloat(document.getElementById('input_valor').value) || 0;
+                    console.log("Valor Original:", valorOriginal);  // Verifique se o valor original está correto
+
+                    // Cálculo do valorPago
+                    let valorPago = valorOriginal - taxas - desconto + juros + acrescimo;
+                    console.log("Valor Pago Calculado:", valorPago);  // Verifique se o valor final está correto
+
+                    // Atualiza o campo 'valorPago' com duas casas decimais
+                    document.getElementById('valorPago').value = valorPago.toFixed(2);
+                }
+
+                // Adiciona eventos para calcular sempre que os inputs forem alterados
+                document.getElementById("taxas").addEventListener("input", calcularValorPago);
+                document.getElementById("juros").addEventListener("input", calcularValorPago);
+                document.getElementById("desconto").addEventListener("input", calcularValorPago);
+                document.getElementById("acrescimo").addEventListener("input", calcularValorPago);
 
 
             </script> 

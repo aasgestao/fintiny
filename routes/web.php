@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/clientes-delete/{id}', [ClienteEmpresaController::class , 'destroy'])->name('empresa.destroy');
     Route::post('empresa-banco', [ClienteEmpresaController::class, 'insertBank'])->name('empresa.banco');
     Route::put('empresa-banco/{id}', [ClienteEmpresaController::class, 'editBank'])->name('empresa.editBanco');
+    Route::post('empresa-categoria', [ClienteEmpresaController::class, 'novaCategoria'])->name('empresa.categoria');
 
 
     //Rotas de usuarios
@@ -57,8 +58,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/financeiro' , [FinanceiroController::class, 'index'])->name('financeiro.index');
     Route::get('/financeiro/contas_pagar' , [FinanceiroController::class, 'contas_pagar'])->name('financeiro.contas_pagar');
     Route::get('/financeiro/contas_receber' , [FinanceiroController::class, 'contas_receber'])->name('financeiro.contas_receber');
-    Route::post('/financeiro/getPedidos' , [FinanceiroController::class, 'getPedidos'])->name('financeiro.getPedidos');
+    Route::post('/financeiro/getContas' , [FinanceiroController::class, 'getContas'])->name('financeiro.getContas');
     Route::put('/financeiro.contas-update', [FinanceiroController::class , 'contas_update'])->name('financeiro.contas-update');
+    Route::post('/financeiro/contas_pagar/baixar_conta/{id}', [FinanceiroController::class , 'pagarConta'])->name('financeiro_pagarConta');
     Route::get('financeiro/lancamentos_contabeis' , [FinanceiroController::class , 'lancamentosIndex'])->name('financeiro.lancamentos');
     
     //Plano de contas
@@ -70,6 +72,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/email-read/{id}', [EmailController::class, 'read'])->name('email.read');
     Route::get('/email-compose', [EmailController::class, 'compose'])->name('email.compose');
     Route::post('/email-send', [EmailController::class, 'send'])->name('email.send');
+    Route::get('/email-reflesh', [EmailController::class , 'receberEmails'])->name('email.reflesh');
 
     //Mudar CNPJ
     Route::post('/mudar-cnpj', [TrocarCnpj::class, 'mudarCnpj'])->name('mudar.cnpj');

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Webklex\IMAP\Facades\Client;
 
 class EmailController extends Controller
 {
@@ -153,4 +154,49 @@ class EmailController extends Controller
             return back()->with('error', 'Email não enviado - 2');
         }
     }
+
+   
+
+    public function receberEmails()
+    {
+        //dd("estou aqui");
+        $client = Client::account('default'); // Pega as credenciais do .env
+        //dd($client);
+        
+        $client->connect(); // Conecta no servidor de e-mail
+        dd($client);
+        $folder = $client->getFolder('INBOX'); // Lê a Caixa de Entrada
+        dd($folder->messages()->unseen()->limit(10)->get());
+        foreach ($folder->messages()->unseen()->limit(10)->get() as $email) {
+            dd($email);
+            echo "Assunto: " . $email->getSubject() . "<br>";
+            echo "De: " . $email->getFrom()[0]->mail . "<br>";
+            echo "Corpo: " . $email->getTextBody() . "<br>";
+            echo "<hr>";
+
+
+            dd($email);
+            // Aqui você pode armazenar no banco
+            // DB::table('emails')->insert([
+            //     'remetente' => $email->getFrom()[0]->mail,
+            //     'assunto' => $email->getSubject(),
+            //     'corpo' => $email->getTextBody(),
+            //     'recebido_em' => now(),
+            // ]);
+
+            //dd($request->input('cliente_id'));
+            // $novo = EmailModel::create([
+            //     'de' => $request->input('de'),
+            //     'para' => $request->input('para'),
+            //     'copia' => $request->input('copia') ?? '',
+            //     'assunto' => $request->input('assunto'),
+            //     'label' => $request->input('label') ?? '',
+            //     'marcadores' => $request->input('marcadores') ?? '',
+            //     'corpo_email' => $request->input('corpo_email'),
+            //     'cliente_id' => $request->input('cliente_id'),
+            // ]);
+        }
+    }
+
+
 }

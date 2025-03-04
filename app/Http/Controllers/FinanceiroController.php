@@ -14,6 +14,7 @@ use App\Models\LancamentosContabeisModel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -168,6 +169,99 @@ class FinanceiroController extends Controller
             'numero_doc'=> $request->input("numero_doc"),
         ]);
     }
+    public function pagarConta(Request $request ,$id)
+    {
+
+        $empresa = ClienteEmpresaModel::where('nome', $request->empresa)->first();
+        $token = $empresa->token_tiny;
+        $dataAjuste = Carbon::parse($request->data)->format('d/m/Y');
+
+        //dd($token);
+        $url = 'https://api.tiny.com.br/api2/conta.pagar.baixar.php';
+
+        $conta = [
+            'conta'=> [
+                'id'=> $request->id_tiny,
+                'contaOrigem'=> $request->contaOrigem,
+                'data'=> $dataAjuste,
+                'categoria'=> $request->categoria,
+                'historico'=> $request->historico,
+                'valorTaxas'=> $request->valorTaxas,
+                'valorJuros'=> $request->valorJuros,
+                'valorDesconto'=> $request->valorDesconto,
+                'valorAcrescimo'=> $request->valorAcrescimo,
+                'valorPago'=> $request->valorPago,
+            ],
+        ];
+
+        $conta = json_encode($conta);
+        $data = "token=$token&conta=$conta&formato=JSON";
+        DB::beginTransaction();
+        try {
+            $response = $this->tinyPagarContas($url, $data, $optional_headers = null);
+            $response = json_decode($response, true);
+            //dd($response);
+
+            Log::info('ContasPagar - baixado no OlistTiny com sucesso');
+
+            if (isset($response['retorno']['status_processamento']) && $response['retorno']['status_processamento'] === '3') {
+                $id_baixa = $response['retorno']['registros'][0]['registro'];
+                $id_baixa = $id_baixa['id'];
+
+                $contaPagar = ContasPagarModel::where('id_tiny', $id_baixa)->first();
+                $contaPagar->update([
+                    'situacao' => "paga",
+                    'empresa'=> $request->empresa,
+                    'valor' => $request->valorPago,
+                    'id_tiny' => $id_baixa,
+                ]);
+
+                DB::commit();
+
+                Log::info('ContasPagar - atualizado com sucesso'. $id_baixa);
+            }
+            ;
+
+            return redirect()->route('financeiro.contas_pagar')->with('success', 'Conta Baixada com sucesso !');
+
+        } catch (Exception $e) {
+            //throw $th;
+            
+
+            Log::error('Conta não atualizada'.$e->getMessage());
+            DB::rollBack();
+
+            return redirect()->route('financeiro.contas_pagar')->with('error', 'Error na baixa !');
+
+
+        }
+        
+    }
+    private function tinyPagarContas($url, $data, $optional_headers = null)
+    {
+        $params = array(
+            'http' => array(
+                'method' => 'POST',
+                'content' => $data
+            )
+        );
+
+        if ($optional_headers !== null) {
+            $params['http']['header'] = $optional_headers;
+        }
+
+        $ctx = stream_context_create($params);
+        $fp = @fopen($url, 'rb', false, $ctx);
+        if (!$fp) {
+            throw new Exception("Problema com $url, $php_errormsg");
+        }
+        $response = @stream_get_contents($fp);
+        if ($response === false) {
+            throw new Exception("Problema obtendo retorno de $url, $php_errormsg");
+        }
+
+        return $response;
+    }
     public function export(Request $request)
     {
         $data = date('dmY_Hsi');
@@ -185,10 +279,10 @@ class FinanceiroController extends Controller
         return view('financeiro/contas_receber', [
             'title' => 'Listagem de Contas',
             'contas' => $contas,
-            'clientes'=> $clientes
+            'clientes'=> $clientes,
         ]);
     }
-    public function getPedidos(Request $request)
+    public function getContas(Request $request)
     {
         $idEmpresa = $request->cliente;
         $empresa = ClienteEmpresaModel::where('id', $idEmpresa)->first();

@@ -68,6 +68,9 @@
                                             <button class="btn btn-sm btn-primary insertBank" data-banco-id="{{$empresa->id }}" data-bs-toggle="modal" data-bs-target="#insertBank">
                                                 <i class="fa-solid fa-building-columns"></i>
                                             </button>
+                                            <button class="btn btn-sm btn-secondary novaCategoria" data-categoria-id="{{$empresa->id }}" data-empresa-cat="{{$empresa->nome}}" data-bs-toggle="modal" data-bs-target="#novaCategoria">
+                                                <i class="fa-solid fa-bars-staggered"></i>
+                                            </button>
                                             {{-- <form action="{{ route('empresa.destroy', ['id' => $empresa->id])}}" method="post">
                                                 @csrf
                                                 @method('DELETE')
@@ -179,7 +182,7 @@
             </div>
         </div>
 
-    <!-- Modal -->
+    <!-- Modal Bancos -->
 <div class="modal fade" id="insertBank" tabindex="-1" aria-labelledby="insertBankLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -223,6 +226,47 @@
   </div>
 </div>
 
+{{-- Modal Categorias --}}
+<div class="modal fade" id="novaCategoria" tabindex="-1" aria-labelledby="novaCategoriaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="novaCategoriaLabel">Nova categoria</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('empresa.categoria')}}" method="post">
+            @csrf
+            @method('POST')
+
+            <input type="hidden" id="input_empresa_cat" name="empresa">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control"  name="nome">
+                <label for="nome">Nome categoria: </label>
+            </div>
+
+            
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control"  name="plano_conta">
+                <label for="plano_conta">Código Plano Contas: </label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="input_categoria_id" name="cliente_id" readonly>
+                <label for="cliente_id">Cliente (ID): </label>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">Criar</button>
+            </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
     <script>
         document.querySelectorAll('.editClientes').forEach(button => {
             button.addEventListener('click', function () {
@@ -252,12 +296,27 @@
     document.querySelectorAll('.insertBank').forEach(button => {
             button.addEventListener('click', function () {
                 id_cliente = this.getAttribute('data-banco-id');
-
+                //alert(empresa_cat);
                 inputDataBancoId = document.querySelector('#input_banco_id');
 
                 inputDataBancoId.value = id_cliente;
+                
             });
         });
+
+
+    document.querySelectorAll('.novaCategoria').forEach(button => {
+        button.addEventListener('click', function(){
+            id_cliente = this.getAttribute('data-categoria-id');
+                empresa_cat = this.getAttribute('data-empresa-cat');
+
+                inputDataBancoId = document.querySelector('#input_categoria_id');
+                inputDataEmpresa = document.querySelector('#input_empresa_cat');
+
+                inputDataBancoId.value = id_cliente;
+                inputDataEmpresa.value = empresa_cat;
+        })
+    })
     </script>
 
 <script>

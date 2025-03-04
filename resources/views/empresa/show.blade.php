@@ -46,6 +46,7 @@
                     <div class="row">
                         <div class="col-6">
                             <table class="table table-sm table-bordered">
+                                <h6>Bancos</h6>
                                 <thead>
                                     <tr>
                                         <th>Nome</th>
@@ -70,6 +71,44 @@
                                                 data-cliente_id="{{ $banco->cliente_id }}"
                                                 data-conta_tiny="{{ $banco->conta_tiny }}"
                                                 data-plano_conta="{{ $banco->plano_conta }}"
+                                                >
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center bg-red-600">Nenhum banco encontrado !</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-6">
+                            <table class="table table-sm table-bordered">
+                                <h6>Categorias</h6>
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Plano Contas</th>
+                                        <th class="text-center"> Ações </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @forelse ($categorias as $categoria)
+                                        <tr>
+                                            <td>{{ $categoria->nome }}</td>
+                                            <td>{{ $categoria->plano_contas }}</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-sm btn-warning text-dark editarBanco" 
+                                                data-bs-toggle="offcanvas" 
+                                                data-bs-target="#editarCategoria"
+                                                data-id="{{ $categoria->id }}"
+                                                data-nome="{{ $categoria->nome }}"
+                                                data-cliente_id="{{ $categoria->cliente_id }}"
+                                                data-plano_conta="{{ $categoria->plano_contas }}"
                                                 >
                                                     <i class="fas fa-edit"></i>
                                                 </button>

@@ -13,15 +13,28 @@
             <div class="card">
                 <x-alert />
                 <div class="card-header">
-                    Inbox
+                   <div class="row  d-flex justify-content-between">
+                    <div class="col-8">
+                        <span>Inbox</span> 
+                    </div>
+                   <div class="col-4">
+                            <a href="{{ route('email.compose' )}}" class="btn btn-primary btn-sm ">
+                                <i class="fas fa-envelope"></i>
+                                Criar Novo
+                            </a>
+
+                            <a href="{{ route('email.reflesh' )}}" class="btn btn-success btn-sm ">
+                                <i class="fas fa-spinner"></i>
+                                Ler Novos
+                            </a>
+                   </div>
+                   </div>
+                    
                 </div>
                 <section>
                     <div class="row">
                         <div class="card-body col-md-3 col-sm-12">
-                            <a href="{{ route('email.compose' )}}" class="btn btn-primary btn-sm col-11 ms-3">
-                                <i class="fas fa-envelope"></i>
-                                Criar Novo
-                            </a>
+                            
                             <div class="card col-11 ms-3">
                                 <ul class="list-group">
                                 <li class="list-group-item list-group-item-action active mt-1">Cx. Entrada</li>

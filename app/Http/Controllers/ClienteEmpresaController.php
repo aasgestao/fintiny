@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BancosModel;
+use App\Models\CategoriaModel;
 use App\Models\ClienteEmpresaModel;
 use Exception;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ class ClienteEmpresaController extends Controller
             'title'=> 'Visualizado Cliente',
             'empresa'=> $empresa,
             'bancos'=> $bancos ?? '',
+            'categorias'=> CategoriaModel::where('cliente_id', $id)->get(),
         ]);
     }
     public function store(Request $request)
@@ -145,6 +147,22 @@ class ClienteEmpresaController extends Controller
 
 
         }
+    }
+    public function novaCategoria(Request $request)
+    {
+        //dd($request);
+        $nova = CategoriaModel::create([
+            "empresa" => $request->empresa,
+            "nome" => $request->nome,
+            "plano_contas" => $request->plano_conta,
+            "cliente_id" => $request->cliente_id,
+        ]);
+
+        Log::info('Categoria criada com sucesso'. $nova->id);
+
+        return redirect()->route('empresa.index');
+
+
     }
     
 }
